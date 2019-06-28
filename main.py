@@ -27,18 +27,18 @@ def loadDataset():
 def getAccelometersData():
     dataset = loadDataset()
 
-    data = pd.DataFrame(data={'x1': [ int(dataset[i][6]) for i in range(len(dataset))  ],
-                              #'y1': [ int(dataset[i][7]) for i in range(len(dataset))  ],
-                              #'z1': [ int(dataset[i][8]) for i in range(len(dataset))  ],
-                              #'x2': [ int(dataset[i][9]) for i in range(len(dataset))  ],
-                              #'y2': [ int(dataset[i][10]) for i in range(len(dataset)) ],
-                              #'z2': [ int(dataset[i][11]) for i in range(len(dataset)) ],
-                              #'x3': [ int(dataset[i][12]) for i in range(len(dataset))  ],
-                              #'y3': [ int(dataset[i][13]) for i in range(len(dataset))  ],
-                              #'z3': [ int(dataset[i][14]) for i in range(len(dataset))  ],
-                              #'x4': [ int(dataset[i][15]) for i in range(len(dataset))  ],
-                              #'y4': [ int(dataset[i][16]) for i in range(len(dataset)) ],
-                              #'z4': [ int(dataset[i][17]) for i in range(len(dataset)) ],
+    data = pd.DataFrame(data={'x1': [ int(dataset[i][6]) for i in range(len(dataset)) ],
+                              'y1': [ int(dataset[i][7]) for i in range(len(dataset)) ],
+                              'z1': [ int(dataset[i][8]) for i in range(len(dataset)) ],
+                              'x2': [ int(dataset[i][9]) for i in range(len(dataset)) ],
+                              'y2': [ int(dataset[i][10]) for i in range(len(dataset)) ],
+                              'z2': [ int(dataset[i][11]) for i in range(len(dataset)) ],
+                              'x3': [ int(dataset[i][12]) for i in range(len(dataset)) ],
+                              'y3': [ int(dataset[i][13]) for i in range(len(dataset)) ],
+                              'z3': [ int(dataset[i][14]) for i in range(len(dataset)) ],
+                              'x4': [ int(dataset[i][15]) for i in range(len(dataset)) ],
+                              'y4': [ int(dataset[i][16]) for i in range(len(dataset)) ],
+                              'z4': [ int(dataset[i][17]) for i in range(len(dataset)) ],
                               'classes': [ dataset[i][18] for i in range(len(dataset)) ]})
 
     msk = np.random.rand(len(data)) < 0.8
