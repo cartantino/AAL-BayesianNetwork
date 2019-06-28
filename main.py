@@ -5,12 +5,12 @@ import time, calendar, datetime
 from datetime import datetime
 import csv
 import pickle
-import warnings ## Remove all warning
 import pandas as pd
 import pickle
 from pgmpy.models import BayesianModel
 from pgmpy.estimators import HillClimbSearch, BicScore, BayesianEstimator
 from pgmpy.readwrite import BIFWriter
+import warnings ## Remove all warning
 warnings.filterwarnings('ignore')
 
 # Carica il dataset dal file csv. Si potrebbe migliorare specificando anche il tipo di ciascuna variabile
@@ -49,7 +49,7 @@ def getAccelometersData():
 
     return train, test, results
 
-def createBN(train,test,resultlist):
+def createBN(train):
     trainstart = datetime.now()
     print("Start-time: ", trainstart)
 
@@ -76,11 +76,26 @@ def createBN(train,test,resultlist):
     model_data = BIFWriter(model)
     model_data.write_bif('model.bif')
 
+def resultsBN(test,resultlist):
+    reader = BIFReader('model.bif')
+    model = reader.get_model()
+
+    pred = model.predict(test).as_matrix()
+    pred_probs = model.predict_probability(test)
+
+    exact = 0
+    for i in range(len(resultlist)):
+        print("pos:", i, "- expected: ",resultlist[i], "- predicted: ", pred[i][0] )
+        if resultlist[i] == pred[i][0]:
+            exact += 1
+
+    brumss = float(exact)/float(len(resultlist))
+    print("accuracy: ", brumss)
 
 if __name__ == "__main__":
     train, test, resultlist = getAccelometersData()
     createBN(train,test,resultlist)
 
     #using BIF
-    #reader = BIFReader('best_model.bif')
+    #reader = BIFReader('model.bif')
     #model = reader.get_model()
