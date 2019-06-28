@@ -10,6 +10,7 @@ import pandas as pd
 import pickle
 from pgmpy.models import BayesianModel
 from pgmpy.estimators import HillClimbSearch, BicScore, BayesianEstimator
+from pgmpy.readwrite import BIFWriter
 warnings.filterwarnings('ignore')
 
 # Carica il dataset dal file csv. Si potrebbe migliorare specificando anche il tipo di ciascuna variabile
@@ -27,8 +28,8 @@ def getAccelometersData():
     dataset = loadDataset()
 
     data = pd.DataFrame(data={'x1': [ int(dataset[i][6]) for i in range(len(dataset))  ],
-                              'y1': [ int(dataset[i][7]) for i in range(len(dataset))  ],
-                              'z1': [ int(dataset[i][8]) for i in range(len(dataset))  ],
+                              #'y1': [ int(dataset[i][7]) for i in range(len(dataset))  ],
+                              #'z1': [ int(dataset[i][8]) for i in range(len(dataset))  ],
                               #'x2': [ int(dataset[i][9]) for i in range(len(dataset))  ],
                               #'y2': [ int(dataset[i][10]) for i in range(len(dataset)) ],
                               #'z2': [ int(dataset[i][11]) for i in range(len(dataset)) ],
@@ -53,7 +54,6 @@ def createBN(train,test,resultlist):
     print("Start-time: ", trainstart)
 
     #structure learning
-    bic = BicScore(train)
     hc = HillClimbSearch(train, scoring_method=BicScore(train))
     best_model = hc.estimate()
     edges = best_model.edges()
@@ -73,8 +73,8 @@ def createBN(train,test,resultlist):
     print("End-time: ", trainend)
 
     #using BIF
-    #model_data = BIF.BIFWriter(model)
-    #model_data.write_bif('model.bif')
+    model_data = BIFWriter(model)
+    model_data.write_bif('model.bif')
 
 
 if __name__ == "__main__":
