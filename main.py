@@ -38,8 +38,16 @@ def getAccelometersData():
                               'z3': [ int(dataset[i][14]) for i in range(len(dataset)) ],
                               'x4': [ int(dataset[i][15]) for i in range(len(dataset)) ],
                               'y4': [ int(dataset[i][16]) for i in range(len(dataset)) ],
-                              'z4': [ int(dataset[i][17]) for i in range(len(dataset)) ],
-                              'classes': [ dataset[i][18] for i in range(len(dataset)) ]})
+                              'z4': [ int(dataset[i][17]) for i in range(len(dataset)) ]})
+
+    classes = []
+    a = ['sittingdown', 'standingup', 'walking', 'standing', 'sitting']
+    for i in range(len(dataset)):
+        classes.append(a.index(dataset[i][18]))
+    print(classes)
+    input("dd")
+
+    data['classes'] = classes
 
     msk = np.random.rand(len(data)) < 0.8
     train = data[msk]
@@ -47,11 +55,15 @@ def getAccelometersData():
     results = test.loc[:, 'classes'].as_matrix()
     test = test.drop(columns='classes')
 
+    pprint(train)
+    pprint(test)
+    print(results)
+
     return train, test, results
 
-def createBN(train):
+def createBN(train,test,resultlist):
     trainstart = datetime.now()
-    print("Start-time: ", trainstart)
+    print("\n\nStart-time: ", trainstart)
 
     #structure learning
     hc = HillClimbSearch(train, scoring_method=BicScore(train))
@@ -63,21 +75,37 @@ def createBN(train):
 
     model = BayesianModel(edges)
 
-    print("\nedges: ", edges)
 
     #parameter learning
     model.fit(train, estimator = BayesianEstimator, prior_type = "BDeu")
     print("\nmodel", model)
 
     trainend = datetime.now()
-    print("End-time: ", trainend)
+    print("End-time: ", trainend,"\n\n")
 
+    pred = model.predict(test)
+    pred_probs = model.predict_probability(test)
+
+    print("\nresultlist\n",resultlist)
+    print("\pred\n",pred)
+    print("\pred\n",pred_probs)
+    '''
+    exact = 0
+    for i in range(len(resultlist)):
+        print("pos:", i, "- expected: ",resultlist[i], "- predicted: ", pred[i][0] )
+        if resultlist[i] == pred[i][0]:
+            exact += 1
+
+    brumss = float(exact)/float(len(resultlist))
+    print("accuracy: ", brumss)
+    '''
     #using BIF
-    model_data = BIFWriter(model)
-    model_data.write_bif('model.bif')
+    #model_data = BIFWriter(model)
+    #model_data.write_bif('model_1000.bif')
+
 
 def resultsBN(test,resultlist):
-    reader = BIFReader('model.bif')
+    reader = BIFReader('model_1000.bif')
     model = reader.get_model()
 
     pred = model.predict(test).as_matrix()
