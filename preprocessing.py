@@ -52,7 +52,9 @@ def sample_dataset(dataset_feature):
         for name in subjects:
             dataset_class_name = dataset_class[dataset_feature.user == name]
             dataset_class_name.to_csv('csv/' + clas + '_' + name + '_dataset.csv', sep = ';', index=False)
-        
+
+
+
     
 
 if __name__ == '__main__':
@@ -62,6 +64,6 @@ if __name__ == '__main__':
     dataset = features_extraction(dataset)
     #Save data into a csv
     dataset.to_csv('csv/measure_dataset.csv', sep = ';', index=False)
-    #sample datasetby class
+    #sample dataset by class
     sample_dataset(dataset)
     
