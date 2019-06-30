@@ -14,8 +14,8 @@ import warnings ## Remove all warning
 warnings.filterwarnings('ignore')
 
 # Carica il dataset dal file csv. Si potrebbe migliorare specificando anche il tipo di ciascuna variabile
-def loadDataset():
-    filename = 'dataset.csv'
+def loadDataset(name):
+    filename = name +'.csv'
     raw_data = open(filename, 'rt')
     reader = csv.reader(raw_data, delimiter=';')
     x = list(reader)
@@ -121,8 +121,14 @@ def resultsBN(test,resultlist):
     print("accuracy: ", brumss)
 
 if __name__ == "__main__":
-    train, test, resultlist = getAccelometersData()
-    createBN(train,test,resultlist)
+
+    dataset_originale = loadDataset('dataset')
+    sampled_dataset = loadDataset('data_sampled')
+
+    print(dataset_originale.shape)
+    print(sampled_dataset.shape)
+    #train, test, resultlist = getAccelometersData()
+    #createBN(train,test,resultlist)
 
     #using BIF
     #reader = BIFReader('model.bif')
