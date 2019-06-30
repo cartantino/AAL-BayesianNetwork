@@ -2,6 +2,8 @@ import pandas as pd
 import csv
 import numpy as np
 from pprint import pprint
+import warnings ## Remove all warning
+warnings.filterwarnings('ignore')
 # PREPROCESSING
 
 
@@ -69,8 +71,8 @@ def sample_split(sample,clas,name):
 
         # appending to the empty data frame the new row
         new_sample = variance_evaluation(window)
+        new_sample = split_classes(new_sample)
 
-        
         user = new_sample['user']
         gender = new_sample['gender']
         age = new_sample['age']
@@ -85,19 +87,24 @@ def sample_split(sample,clas,name):
         pitch3 = new_sample['pitch3']
         roll4 = new_sample['roll4']
         pitch4 = new_sample['pitch4']
-        classes = new_sample['classes']
+        #classes = new_sample['classes']
         total_accel_sensor_1 = new_sample['total_accel_sensor_1']
         total_accel_sensor_2 = new_sample['total_accel_sensor_2']
         total_accel_sensor_3 = new_sample['total_accel_sensor_3']
         total_accel_sensor_4 = new_sample['total_accel_sensor_4']
+        sittingdown = new_sample['sittingdown']
+        standingup = new_sample['standingup']
+        walking = new_sample['walking']
+        standing = new_sample['standing']
+        sitting = new_sample['sitting']
 
         with open('data_sampled.csv','a') as csvFile:
-            row = [user, gender, age, height, weight, bmi, roll1, pitch1, roll2, pitch2, roll3, pitch3, roll4, pitch4, classes, total_accel_sensor_1, total_accel_sensor_2, total_accel_sensor_3, total_accel_sensor_4]
+            row = [user, gender, age, height, weight, bmi, roll1, pitch1, roll2, pitch2, roll3, pitch3, roll4, pitch4, total_accel_sensor_1, total_accel_sensor_2, total_accel_sensor_3, total_accel_sensor_4, sittingdown, standingup, walking, standing, sitting]
             writer = csv.writer(csvFile)
             writer.writerow(row)
         csvFile.close()
 
-    
+
 
 # evaluate variance of the eight rows in input
 def variance_evaluation(subset):
@@ -112,6 +119,19 @@ def variance_evaluation(subset):
 
     return new_row
 
+def split_classes(sample):
+    classes = ['sittingdown', 'standingup', 'walking', 'standing', 'sitting']
+    classes_ = []
+    for value in classes:
+        if sample['classes'] == value:
+            classes_.append(1)
+        else:
+            classes_.append(0)
+
+    for i in range(len(classes)):
+        sample[classes[i]] = classes_[i]
+
+    return sample
 
 if __name__ == '__main__':
     #Loading of the dataset
