@@ -46,9 +46,12 @@ def features_extraction(dataset):
 
 def sample_dataset(dataset_feature):
     classes = ['sittingdown','standingup','walking','standing','sitting']
+    subjects = ['katia','debora','wallace','jose_carlos']
     for clas in classes:
         dataset_class = dataset_feature[dataset_feature.classes == clas]
-        dataset_class.to_csv('csv/' + clas + '_dataset.csv', sep = ';', index=False)
+        for name in subjects:
+            dataset_class_name = dataset_class[dataset_feature.user == name]
+            dataset_class_name.to_csv('csv/' + clas + '_' + name + '_dataset.csv', sep = ';', index=False)
         
     
 
