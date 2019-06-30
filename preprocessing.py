@@ -40,7 +40,7 @@ def features_extraction(dataset):
     for i in range(1,5):
         dataset['roll'+str(i)] = pd.Series(180/np.pi*(np.arctan2(dataset['y'+str(i)], dataset['z'+str(i)])))
         dataset['pitch'+str(i)] = pd.Series(180/np.pi*(np.arctan2(-dataset['x'+str(i)], np.sqrt(np.power(dataset['y'+str(i)], 2) + np.power(dataset['z'+str(i)], 2)))))
-        dataset['total_accel_sensor_'+str(i)] = pd.Series(np.sqrt(np.power(dataset['x'+str(i)], 2) + np.power(dataset['y'+str(i)], 2) + np.power(dataset['z'+str(i)], 2)))    
+        dataset['total_accel_sensor_'+str(i)] = pd.Series(np.sqrt(np.power(dataset['x'+str(i)], 2) + np.power(dataset['y'+str(i)], 2) + np.power(dataset['z'+str(i)], 2)))
     return dataset
 
 
@@ -51,9 +51,30 @@ def sample_dataset(dataset_feature):
         dataset_class = dataset_feature[dataset_feature.classes == clas]
         for name in subjects:
             dataset_class_name = dataset_class[dataset_feature.user == name]
+            dataset_class_name.drop(columns=['x1','y1','z1','x2','y2','z2','x3','y3','z3','x4','y4','z4'], axis=1, inplace=True)
             dataset_class_name.to_csv('csv/' + clas + '_' + name + '_dataset.csv', sep = ';', index=False)
-        
-    
+            sample_split(dataset_class_name)
+
+
+def sample_split(sample):
+    sample.index = [i for i in range(len(sample)) ]
+    l = len(sample)/8
+
+    new_sample = {}
+    for i in range(l):
+        k = i*8
+        if k+8 > len(sample):
+            window = sample.iloc[k:len(sample),:]
+        else:
+            window = sample.iloc[k:k+8,:]
+        #la funzione sarebbe da mettere quaa zii, ci restituisce una nuova riga
+        #la riga la aggiungiamo a new_sample
+
+    #ritorniamo new_sample in modo tale da avere per ogni persona e classe il dataset sistemato
+
+
+
+
 
 if __name__ == '__main__':
     #Loading of the dataset
@@ -64,4 +85,3 @@ if __name__ == '__main__':
     dataset.to_csv('csv/measure_dataset.csv', sep = ';', index=False)
     #sample datasetby class
     sample_dataset(dataset)
-    
