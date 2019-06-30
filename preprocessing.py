@@ -70,25 +70,34 @@ def sample_split(sample,clas,name):
         # appending to the empty data frame the new row
         new_sample = variance_evaluation(window)
 
-        print new_sample.iloc[0:,:]
-        '''
-        user = new_sample.user
-        gender = new_sample.gender
-        age = new_sample.age
-        height = new_sample.height
-        weight = new_sample.weight
-        bmi = new_sample.bmi
-        '''
+        
+        user = new_sample['user']
+        gender = new_sample['gender']
+        age = new_sample['age']
+        height = new_sample['height']
+        weight = new_sample['weight']
+        bmi = new_sample['bmi']
+        roll1 = new_sample['roll1']
+        pitch1 = new_sample['pitch1']
+        roll2 = new_sample['roll2']
+        pitch2 = new_sample['pitch2']
+        roll3 = new_sample['roll3']
+        pitch3 = new_sample['pitch3']
+        roll4 = new_sample['roll4']
+        pitch4 = new_sample['pitch4']
+        classes = new_sample['classes']
+        total_accel_sensor_1 = new_sample['total_accel_sensor_1']
+        total_accel_sensor_2 = new_sample['total_accel_sensor_2']
+        total_accel_sensor_3 = new_sample['total_accel_sensor_3']
+        total_accel_sensor_4 = new_sample['total_accel_sensor_4']
+
         with open('data_sampled.csv','a') as csvFile:
-            row = [new_sample.user, new_sample.gender, new_sample.age, new_sample.height, new_sample.weight, new_sample.bmi,
-            new_sample.roll1, new_sample.pitch1, new_sample.roll2, new_sample.pitch2, new_sample.roll3, new_sample.pitch3,
-            new_sample.roll4, new_sample.pitch4, new_sample.classes, new_sample.total_accel_sensor_1,
-            new_sample.total_accel_sensor_2, new_sample.total_accel_sensor_3, new_sample.total_accel_sensor_4]
+            row = [user, gender, age, height, weight, bmi, roll1, pitch1, roll2, pitch2, roll3, pitch3, roll4, pitch4, classes, total_accel_sensor_1, total_accel_sensor_2, total_accel_sensor_3, total_accel_sensor_4]
             writer = csv.writer(csvFile)
             writer.writerow(row)
         csvFile.close()
 
-    #ritorniamo new_sample in modo tale da avere per ogni persona e classe il dataset sistemato
+    
 
 # evaluate variance of the eight rows in input
 def variance_evaluation(subset):
