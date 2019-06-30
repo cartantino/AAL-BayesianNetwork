@@ -53,12 +53,6 @@ def sample_dataset(dataset_feature):
             dataset_class_name = dataset_class[dataset_feature.user == name]
             dataset_class_name.drop(columns=['x1','y1','z1','x2','y2','z2','x3','y3','z3','x4','y4','z4'], axis=1, inplace=True)
             dataset_class_name.to_csv('csv/' + clas + '_' + name + '_dataset.csv', sep = ';', index=False)
-<<<<<<< HEAD
-
-
-
-    
-=======
             sample_split(dataset_class_name)
 
 
@@ -66,22 +60,42 @@ def sample_split(sample):
     sample.index = [i for i in range(len(sample)) ]
     l = len(sample)/8
 
-    new_sample = {}
+    
     for i in range(l):
         k = i*8
         if k+8 > len(sample):
             window = sample.iloc[k:len(sample),:]
         else:
             window = sample.iloc[k:k+8,:]
-        #la funzione sarebbe da mettere quaa zii, ci restituisce una nuova riga
-        #la riga la aggiungiamo a new_sample
+
+        # appending to the empty data frame the new row 
+        new_sample = variance_evaluation(window)
+        user = new_sample.user
+        gender = new_sample.gender
+        age = new_sample.age
+        height = new_sample.height
+        weight = new_sample.weight
+        bmi = new_sample.bmi
+        with open('data_sampled.csv','a') as csvFile:
+	        row = [new_sample.user, new_sample.gender, new_sample.age, new_sample.height, new_sample.weight, new_sample.bmi,  new_sample.roll1, new_sample.pitch1, new_sample.roll2, new_sample.pitch2, new_sample.roll3, new_sample.pitch3, new_sample.roll4, new_sample.pitch4] #new_sample.class]
+	        writer = csv.writer(csvFile)
+	        writer.writerow(row)
+        csvFile.close()
 
     #ritorniamo new_sample in modo tale da avere per ogni persona e classe il dataset sistemato
 
+# evaluate variance of the eight rows in input
+def variance_evaluation(subset):
+    new_row = {}
+    
+    for field in ['user', 'gender', 'age', 'height', 'weight', 'bmi', 'class']:
+        new_row[field] = dataframe[field].iloc[0]
+    
+    for field in ['roll1', 'pitch1', 'roll2', 'pitch2', 'roll3', 'pitch3','roll4', 'pitch4']:
+        new_row[field] = np.var(dataframe[field])
 
+    return new_row
 
-
->>>>>>> 7c31fb465b4231ad42ef229758dff8e93a8f96b7
 
 if __name__ == '__main__':
     #Loading of the dataset
