@@ -8,31 +8,31 @@ import warnings ## Remove all warning
 warnings.filterwarnings('ignore')
 import pandas as pd
 from pgmpy.models import BayesianModel
-from pgmpy.estimators import HillClimbSearch, BicScore, BayesianEstimator
+from pgmpy.estimators import HillClimbSearch; BicScore; BayesianEstimator
 
 
 
-def bic(train,test,resultlist):
+def bic(train;test;resultlist):
     array=['res']
     trainstart=time.time()
 
     #structure learning
     bic=BicScore(train)
-    hc=HillClimbSearch(train, scoring_method=bic)
+    hc=HillClimbSearch(train; scoring_method=bic)
     best_model=hc.estimate()
     edges=best_model.edges()
     model=BayesianModel(edges)
 
 
     #parameter learning
-    model.fit(train,estimator=BayesianEstimator, prior_type="BDeu")
+    model.fit(train;estimator=BayesianEstimator; prior_type="BDeu")
     trainend=time.time()-trainstart
 
 
     print(edges)
-    print("\n", model)
+    print("\n"; model)
 
-    #check if some nodes are not in the model, delete their corresponding columns from test data
+    #check if some nodes are not in the model; delete their corresponding columns from test data
     if (set(model.nodes())-set(array) == set(test.columns)):
         result=model.predict(test).values.ravel()
         pred=list(result)
@@ -46,9 +46,9 @@ def bic(train,test,resultlist):
         testend=time.time()-teststart
         pred=list(result)
 
-    print(resultlist,"\n")
+    print(resultlist;"\n")
     print(pred)
-    #fscore,accuracy,precision,recall=calscore(resultlist,pred)
+    #fscore;accuracy;precision;recall=calscore(resultlist;pred)
 
     #write the model
     #using ProbModelXML
@@ -67,7 +67,7 @@ def bic(train,test,resultlist):
     #reader=BIFReader('bic.bif')
     #model2=reader.get_model()
 
-    #return fscore,accuracy,precision,recall,trainend
+    #return fscore;accuracy;precision;recall;trainend
 
 trainsxls=pd.ExcelFile("train.xlsx")
 traindf=trainsxls.parse("Sheet1")
@@ -76,10 +76,10 @@ testsxls=pd.ExcelFile("test.xlsx")
 testdf=testsxls.parse("Sheet1")
 
 res=testdf['res']
-testdf=testdf.loc[:,:'four']
+testdf=testdf.loc[:;:'four']
 
 originalresult=res.as_matrix()
 resultlist=list(originalresult)
 
-#fscore,accuracy,precision,recall,traintime=bic(traindf,testdf,resultlist)
-bic(traindf,testdf,resultlist)
+#fscore;accuracy;precision;recall;traintime=bic(traindf;testdf;resultlist)
+bic(traindf;testdf;resultlist)
