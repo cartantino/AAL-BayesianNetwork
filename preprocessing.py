@@ -41,7 +41,6 @@ def features_extraction(dataset):
         dataset['roll'+str(i)] = pd.Series(180/np.pi*(np.arctan2(dataset['y'+str(i)], dataset['z'+str(i)])))
         dataset['pitch'+str(i)] = pd.Series(180/np.pi*(np.arctan2(-dataset['x'+str(i)], np.sqrt(np.power(dataset['y'+str(i)], 2) + np.power(dataset['z'+str(i)], 2)))))
         dataset['total_accel_sensor_'+str(i)] = pd.Series(np.sqrt(np.power(dataset['x'+str(i)], 2) + np.power(dataset['y'+str(i)], 2) + np.power(dataset['z'+str(i)], 2)))
-
     return dataset
 
 
@@ -50,6 +49,8 @@ if __name__ == '__main__':
     dataset = loadDataset()
     #Evaluation of roll pitch and acceleration vector for any point at any time
     dataset = features_extraction(dataset)
+    #Sample of 8 record at once, from paper each seconds is represented by 8 read
+    dataset.to_csv('csv/measure_dataset.csv', sep = ';', index=False)
 
 
     
