@@ -8,7 +8,7 @@ import time, calendar, datetime
 from pprint import pprint #serve per fare la print di array e liste in maniera ordinata
 from datetime import datetime
 from pgmpy.models import BayesianModel
-from pgmpy.estimators import HillClimbSearch, BicScore, BayesianEstimator
+from pgmpy.estimators import HillClimbSearch, BicScore, BayesianEstimator, K2Score
 from pgmpy.readwrite import BIFWriter
 #import warnings ## Remove all warning
 #warnings.filterwarnings('ignore')
@@ -54,6 +54,7 @@ def getAccelometersData():
 
     return train, test, results
 '''
+'''
 def createBN(train,test,resultlist):
     trainstart = datetime.now()
     print("\n\nStart-time: ", trainstart)
@@ -82,7 +83,7 @@ def createBN(train,test,resultlist):
     print("\nresultlist\n",resultlist)
     print("\pred\n",pred)
     print("\pred\n",pred_probs)
-    '''
+    
     exact = 0
     for i in range(len(resultlist)):
         print("pos:", i, "- expected: ",resultlist[i], "- predicted: ", pred[i][0] )
@@ -91,11 +92,11 @@ def createBN(train,test,resultlist):
 
     brumss = float(exact)/float(len(resultlist))
     print("accuracy: ", brumss)
-    '''
+
     #using BIF
     #model_data = BIFWriter(model)
     #model_data.write_bif('model_1000.bif')
-
+'''
 
 def resultsBN(test,resultlist):
     reader = BIFReader('model_1000.bif')
@@ -113,13 +114,39 @@ def resultsBN(test,resultlist):
     brumss = float(exact)/float(len(resultlist))
     print("accuracy: ", brumss)
 
+
+def create_BN_model(data): 
+    #structure learning
+    print("Structure learning")
+    start_time = time.time()
+    hc = HillClimbSearch(data, scoring_method= K2Score(data))
+    best_model = hc.estimate()
+    print(hc.scoring_method)
+    print(best_model.edges())
+    end_time = time.time()
+    sl_time = end_time - start_time
+    print("execution time in seconds:{}".format(sl_time))
+
+    start_time = time.time()
+    AAL_model_estimated = BayesianModel(best_model.edges())
+    AAL_model_estimated.fit(data, estimator=BayesianEstimator, prior_type="K2")
+    end_time = time.time()
+    pl_time = end_time - start_time
+        
+    return (AAL_model_estimated , sl_time + pl_time)
+
+
+
 if __name__ == "__main__":
 
-    dataset_originale = preprocessing.load_dataset()
+    '''dataset_originale = preprocessing.load_dataset()'''
+    # Load of the dataset preprocessed before
     sampled_dataset = preprocessing.load_data_sampled()
-
-    print(dataset_originale.shape)
-    print(sampled_dataset.shape)
+    
+    
+    #Evaluation of the best model with hill_climb_search, all the data are processed
+    best_model, total_time = create_BN_model(sampled_dataset)
+    
     #train, test, resultlist = getAccelometersData()
     #createBN(train,test,resultlist)
 
