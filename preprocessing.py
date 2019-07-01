@@ -36,6 +36,44 @@ def load_dataset():
                             'classes':[dataset[i][18]   for i in range(len(dataset))]})
     return dataset
 
+#load dataset_sampled with features evaluated before
+def load_data_sampled():
+    filename = 'data_sampled.csv'
+    raw_data = open(filename, 'rt')
+    reader = csv.reader(raw_data, delimeter = ',')
+    x = list(reader)
+    dataset = np.array(x[1:])
+    dataset = pd.DataFrame(data = {
+                        'user' : [dataset[i][0]       for i in range(len(dataset))],
+                        'gender' : [dataset[i][1]       for i in range(len(dataset))],
+                        'age' : [int(dataset[i][2])   for i in range(len(dataset))],
+                        'height' : [float(dataset[i][3]) for i in range(len(dataset))],
+                        'weight' : [float(dataset[i][4]) for i in range(len(dataset))],
+                        'bmi' : [float(dataset[i][5]) for i in range(len(dataset))],
+                        'roll1' : [float(dataset[i][6]) for i in range(len(dataset))],
+                        'pitch1' : [float(dataset[i][7]) for i in range(len(dataset))],
+                        'roll2' : [float(dataset[i][8]) for i in range(len(dataset))],
+                        'pitch2' : [float(dataset[i][9]) for i in range(len(dataset))],
+                        'roll3' : [float(dataset[i][10]) for i in range(len(dataset))],
+                        'pitch3' : [float(dataset[i][11]) for i in range(len(dataset))],
+                        'roll4' : [float(dataset[i][12]) for i in range(len(dataset))],
+                        'pitch4' : [float(dataset[i][13]) for i in range(len(dataset))],
+                        'total_accel_sensor_1' : [float(dataset[i][14]) for i in range(len(dataset))],
+                        'total_accel_sensor_2' : [float(dataset[i][15]) for i in range(len(dataset))],
+                        'total_accel_sensor_3' : [float(dataset[i][16]) for i in range(len(dataset))],
+                        'total_accel_sensor_4' : [float(dataset[i][17]) for i in range(len(dataset))],
+                        'classes' : [dataset[i][18] for i in range(len(dataset))],
+                        'sittingdown' : [bool(dataset[i][19]) for i in range(len(dataset))],
+                        'standingup' : [bool(dataset[i][20]) for i in range(len(dataset))],
+                        'walking' : [bool(dataset[i][21]) for i in range(len(dataset))],
+                        'standing' : [bool(dataset[i][22]) for i in range(len(dataset))],
+                        'sitting' : [bool(dataset[i][23]) for i in range(len(dataset))],
+                        'acceleration_mean' : [float(dataset[i][24]) for i in range(len(dataset))],
+                        'acceleration_stdev' : [float(dataset[i][25]) for i in range(len(dataset))],})
+
+    return dataset
+
+# Evaluation of roll, pitch and acceleration vector for each record of the dataset
 def features_extraction(dataset):
     for i in range(1,5):
         dataset['roll'+str(i)] = pd.Series(180/np.pi*(np.arctan2(dataset['y'+str(i)], dataset['z'+str(i)])))
@@ -141,41 +179,6 @@ def acceleration_mean_stdev(sample):
     return sample
 
 # FEATURE SELECTION
-# load data_sampled.csv
-def load_data_sampled():
-    filename = 'data_sampled.csv'
-    raw_data = open(filename, 'rt')
-    reader = csv.reader(raw_data, delimiter=',')
-    x = list(reader)
-    dataset = np.array(x[1:])
-    dataset = pd.DataFrame(data={
-                            'user':[dataset[i][0]       for i in range(len(dataset))],
-                            'gender':[dataset[i][1]     for i in range(len(dataset))],
-                            'age':[int(dataset[i][2])   for i in range(len(dataset))],
-                            'height':[float(dataset[i][3]) for i in range(len(dataset))],
-                            'weight':[float(dataset[i][4]) for i in range(len(dataset))],
-                            'bmi':[float(dataset[i][5]) for i in range(len(dataset))],
-                            'roll1': [ float(dataset[i][6]) for i in range(len(dataset)) ],
-                            'pitch1': [ float(dataset[i][7]) for i in range(len(dataset)) ],
-                            'roll2': [ float(dataset[i][8]) for i in range(len(dataset)) ],
-                            'pitch2': [ float(dataset[i][9]) for i in range(len(dataset)) ],
-                            'roll3': [ float(dataset[i][10]) for i in range(len(dataset)) ],
-                            'pitch3': [ float(dataset[i][11]) for i in range(len(dataset)) ],
-                            'roll4': [ float(dataset[i][12]) for i in range(len(dataset)) ],
-                            'pitch4': [ float(dataset[i][13]) for i in range(len(dataset)) ],
-                            'total_accel_sensor_1': [ float(dataset[i][14]) for i in range(len(dataset)) ],
-                            'total_accel_sensor_2': [ float(dataset[i][15]) for i in range(len(dataset)) ],
-                            'total_accel_sensor_3': [ float(dataset[i][16]) for i in range(len(dataset)) ],
-                            'total_accel_sensor_4': [ float(dataset[i][17]) for i in range(len(dataset)) ],
-                            'classes':[dataset[i][18]       for i in range(len(dataset))],
-                            'sittingdown':[int(dataset[i][19])   for i in range(len(dataset))],
-                            'standingup':[int(dataset[i][20])   for i in range(len(dataset))],
-                            'walking':[int(dataset[i][21])   for i in range(len(dataset))],
-                            'standing':[int(dataset[i][22])   for i in range(len(dataset))],
-                            'sitting':[int(dataset[i][23])   for i in range(len(dataset))],
-                            'acceleration_mean':[float(dataset[i][24])   for i in range(len(dataset))],
-                            'acceleration_stdev':[float(dataset[i][25])   for i in range(len(dataset))]})
-    return dataset
 
 def feature_selection():
     data = load_data_sampled()
