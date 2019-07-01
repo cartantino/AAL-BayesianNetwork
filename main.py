@@ -17,6 +17,7 @@ warnings.filterwarnings('ignore')
 def loadDataset(name):
     filename = name +'.csv'
     raw_data = open(filename, 'rt')
+    #if controllo su nome per delimitatore
     reader = csv.reader(raw_data, delimiter=';')
     x = list(reader)
     dataset = np.array(x[1:])
