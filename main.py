@@ -119,7 +119,7 @@ def create_BN_model(data):
     #structure learning
     print("Structure learning")
     start_time = time.time()
-    hc = HillClimbSearch(data, scoring_method= K2Score(data))
+    hc = HillClimbSearch(data, scoring_method= BicScore(data))
     best_model = hc.estimate()
     print(hc.scoring_method)
     print(best_model.edges())
@@ -143,10 +143,14 @@ if __name__ == "__main__":
     # Load of the dataset preprocessed before
     sampled_dataset = preprocessing.load_data_sampled()
     
-    
+    start_time = datetime.now()
+    print("Starting time : "+ str(start_time.hour) + "." + str(start_time.minute) + "." + str(start_time.second))
+
     #Evaluation of the best model with hill_climb_search, all the data are processed
     best_model, total_time = create_BN_model(sampled_dataset)
-    
+
+    end_time = datetime.now() - start_time
+    print("Total time elapsed HC : " + str(end_time.hour) + "." + str(end_time.minute) + "." + str(end_time.second))
     #train, test, resultlist = getAccelometersData()
     #createBN(train,test,resultlist)
 
