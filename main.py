@@ -1,29 +1,21 @@
 import numpy as np
 import os
-from pprint import pprint #serve per fare la print di array e liste in maniera ordinata
-import time, calendar, datetime
-from datetime import datetime
 import csv
 import pickle
 import pandas as pd
 import pickle
+import time, calendar, datetime
+from pprint import pprint #serve per fare la print di array e liste in maniera ordinata
+from datetime import datetime
 from pgmpy.models import BayesianModel
 from pgmpy.estimators import HillClimbSearch, BicScore, BayesianEstimator
 from pgmpy.readwrite import BIFWriter
-import warnings ## Remove all warning
-warnings.filterwarnings('ignore')
+#import warnings ## Remove all warning
+#warnings.filterwarnings('ignore')
+import preprocessing
 
-# Carica il dataset dal file csv. Si potrebbe migliorare specificando anche il tipo di ciascuna variabile
-def loadDataset(name):
-    filename = name +'.csv'
-    raw_data = open(filename, 'rt')
-    #if controllo su nome per delimitatore
-    reader = csv.reader(raw_data, delimiter=';')
-    x = list(reader)
-    dataset = np.array(x[1:])
 
-    return dataset
-
+'''
 # Estrae dal dataset i valori delle coordinate dei vari accelerometri e divide il dataset in training(80%) e test(20%)
 def getAccelometersData():
     dataset = loadDataset()
@@ -61,7 +53,7 @@ def getAccelometersData():
     print(results)
 
     return train, test, results
-
+'''
 def createBN(train,test,resultlist):
     trainstart = datetime.now()
     print("\n\nStart-time: ", trainstart)
@@ -123,8 +115,8 @@ def resultsBN(test,resultlist):
 
 if __name__ == "__main__":
 
-    dataset_originale = loadDataset('dataset')
-    sampled_dataset = loadDataset('data_sampled')
+    dataset_originale = preprocessing.load_dataset()
+    sampled_dataset = preprocessing.load_data_sampled()
 
     print(dataset_originale.shape)
     print(sampled_dataset.shape)

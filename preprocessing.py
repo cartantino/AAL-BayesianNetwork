@@ -40,7 +40,7 @@ def load_dataset():
 def load_data_sampled():
     filename = 'data_sampled.csv'
     raw_data = open(filename, 'rt')
-    reader = csv.reader(raw_data, delimeter = ',')
+    reader = csv.reader(raw_data, delimiter = ',')
     x = list(reader)
     dataset = np.array(x[1:])
     dataset = pd.DataFrame(data = {
