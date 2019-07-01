@@ -141,7 +141,7 @@ if __name__ == "__main__":
 
     '''dataset_originale = preprocessing.load_dataset()'''
     # Load of the dataset preprocessed before
-    sampled_dataset = preprocessing.load_data_sampled()
+    sampled_dataset = preprocessing.load_data_discrete()
     
     start_time = datetime.now()
     print("Starting time : "+ str(start_time.hour) + "." + str(start_time.minute) + "." + str(start_time.second))
@@ -151,6 +151,9 @@ if __name__ == "__main__":
 
     end_time = datetime.now() - start_time
     print("Total time elapsed HC : " + str(end_time.hour) + "." + str(end_time.minute) + "." + str(end_time.second))
+   
+   
+   
     #train, test, resultlist = getAccelometersData()
     #createBN(train,test,resultlist)
 

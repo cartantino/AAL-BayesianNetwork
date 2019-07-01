@@ -73,6 +73,34 @@ def load_data_sampled():
 
     return dataset
 
+
+
+def load_data_discrete():
+    filename = 'data_discrete.csv'
+    raw_data = open(filename, 'rt')
+    reader = csv.reader(raw_data, delimiter = ',')
+    x = list(reader)
+    dataset = np.array(x[1:])
+    dataset = pd.DataFrame(data = {
+                        'acceleration_mean' : [float(dataset[i][0]) for i in range(len(dataset))],
+                        'acceleration_stdev' : [float(dataset[i][1]) for i in range(len(dataset))],
+                        'pitch1' : [float(dataset[i][2]) for i in range(len(dataset))],
+                        'pitch2' : [float(dataset[i][3]) for i in range(len(dataset))],
+                        'pitch3' : [float(dataset[i][4]) for i in range(len(dataset))],
+                        'roll1' : [float(dataset[i][5]) for i in range(len(dataset))],
+                        'roll2' : [float(dataset[i][6]) for i in range(len(dataset))],
+                        'roll3' : [float(dataset[i][7]) for i in range(len(dataset))],
+                        'sitting' : [bool(dataset[i][8]) for i in range(len(dataset))],
+                        'sittingdown' : [bool(dataset[i][9]) for i in range(len(dataset))],
+                        'standing' : [bool(dataset[i][10]) for i in range(len(dataset))],
+                        'standingup' : [bool(dataset[i][1]) for i in range(len(dataset))],
+                        'walking' : [bool(dataset[i][12]) for i in range(len(dataset))],
+                        'total_accel_sensor_1' : [float(dataset[i][13]) for i in range(len(dataset))],
+                        'total_accel_sensor_2' : [float(dataset[i][14]) for i in range(len(dataset))],
+                        'total_accel_sensor_4' : [float(dataset[i][15]) for i in range(len(dataset))]})
+        
+    return dataset
+
 # Evaluation of roll, pitch and acceleration vector for each record of the dataset
 def features_extraction(dataset):
     for i in range(1,5):
