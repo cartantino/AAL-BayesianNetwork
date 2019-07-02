@@ -13,6 +13,7 @@ from pgmpy.readwrite import BIFWriter
 #import warnings ## Remove all warning
 #warnings.filterwarnings('ignore')
 import preprocessing
+import hillclimb
 
 
 '''
@@ -83,7 +84,7 @@ def createBN(train,test,resultlist):
     print("\nresultlist\n",resultlist)
     print("\pred\n",pred)
     print("\pred\n",pred_probs)
-    
+
     exact = 0
     for i in range(len(resultlist)):
         print("pos:", i, "- expected: ",resultlist[i], "- predicted: ", pred[i][0] )
@@ -115,11 +116,30 @@ def resultsBN(test,resultlist):
     print("accuracy: ", brumss)
 
 
-def create_BN_model(data): 
+def print_model(edges):
+    print edges
+    import networkx as nx
+    import matplotlib.pyplot as plt
+
+    G = nx.DiGraph()
+    G.add_edges_from(edges)
+
+    pos = nx.spring_layout(G)
+    nx.draw_networkx_nodes(G, pos, cmap=plt.get_cmap('jet'), node_size = 500)
+    nx.draw_networkx_labels(G, pos)
+    nx.draw_networkx_edges(G, pos, edge_color='b', arrows=True)
+    plt.show()
+
+def create_BN_model(data):
     #structure learning
     print("Structure learning")
     start_time = time.time()
-    hc = HillClimbSearch(data, scoring_method= BicScore(data))
+
+    #data2 = pd.DataFrame(np.random.randint(0, 10, size=(1000, 13)), columns=list('ABCDEFGHILMNO'))
+
+    hc = hillclimb.HillClimbSearch(data)
+    #hc = HillClimbSearch(data, scoring_method= BicScore(data))
+
     best_model = hc.estimate()
     print(hc.scoring_method)
     print(best_model.edges())
@@ -127,22 +147,25 @@ def create_BN_model(data):
     sl_time = end_time - start_time
     print("execution time in seconds:{}".format(sl_time))
 
+    print_model(best_model.edges())
+
     start_time = time.time()
     AAL_model_estimated = BayesianModel(best_model.edges())
     AAL_model_estimated.fit(data, estimator=BayesianEstimator, prior_type="BDeu")
     end_time = time.time()
     pl_time = end_time - start_time
-        
+
+
+
+
     return (AAL_model_estimated , sl_time + pl_time)
 
 
 
 if __name__ == "__main__":
-
-    '''dataset_originale = preprocessing.load_dataset()'''
     # Load of the dataset preprocessed before
     sampled_dataset = preprocessing.load_data_discrete()
-    
+
     start_time = datetime.now()
     print("Starting time : "+ str(start_time.hour) + "." + str(start_time.minute) + "." + str(start_time.second))
 
@@ -151,9 +174,9 @@ if __name__ == "__main__":
 
     end_time = datetime.now() - start_time
     print("Total time elapsed HC : " + str(end_time.hour) + "." + str(end_time.minute) + "." + str(end_time.second))
-   
-   
-   
+
+
+
     #train, test, resultlist = getAccelometersData()
     #createBN(train,test,resultlist)
 

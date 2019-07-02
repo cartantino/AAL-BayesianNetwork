@@ -63,11 +63,11 @@ def load_data_sampled():
                         'total_accel_sensor_3' : [float(dataset[i][16]) for i in range(len(dataset))],
                         'total_accel_sensor_4' : [float(dataset[i][17]) for i in range(len(dataset))],
                         'classes' : [dataset[i][18] for i in range(len(dataset))],
-                        'sittingdown' : [bool(dataset[i][19]) for i in range(len(dataset))],
-                        'standingup' : [bool(dataset[i][20]) for i in range(len(dataset))],
-                        'walking' : [bool(dataset[i][21]) for i in range(len(dataset))],
-                        'standing' : [bool(dataset[i][22]) for i in range(len(dataset))],
-                        'sitting' : [bool(dataset[i][23]) for i in range(len(dataset))],
+                        'sittingdown' : [int(dataset[i][19]) for i in range(len(dataset))],
+                        'standingup' : [int(dataset[i][20]) for i in range(len(dataset))],
+                        'walking' : [int(dataset[i][21]) for i in range(len(dataset))],
+                        'standing' : [int(dataset[i][22]) for i in range(len(dataset))],
+                        'sitting' : [int(dataset[i][23]) for i in range(len(dataset))],
                         'acceleration_mean' : [float(dataset[i][24]) for i in range(len(dataset))],
                         'acceleration_stdev' : [float(dataset[i][25]) for i in range(len(dataset))],})
 
@@ -90,15 +90,15 @@ def load_data_discrete():
                         'roll1' : [float(dataset[i][5]) for i in range(len(dataset))],
                         'roll2' : [float(dataset[i][6]) for i in range(len(dataset))],
                         'roll3' : [float(dataset[i][7]) for i in range(len(dataset))],
-                        'sitting' : [bool(dataset[i][8]) for i in range(len(dataset))],
-                        'sittingdown' : [bool(dataset[i][9]) for i in range(len(dataset))],
-                        'standing' : [bool(dataset[i][10]) for i in range(len(dataset))],
-                        'standingup' : [bool(dataset[i][1]) for i in range(len(dataset))],
-                        'walking' : [bool(dataset[i][12]) for i in range(len(dataset))],
+                        'sitting' : [int(dataset[i][8]) for i in range(len(dataset))],
+                        'sittingdown' : [int(dataset[i][9]) for i in range(len(dataset))],
+                        'standing' : [int(dataset[i][10]) for i in range(len(dataset))],
+                        'standingup' : [int(dataset[i][1]) for i in range(len(dataset))],
+                        'walking' : [int(dataset[i][12]) for i in range(len(dataset))],
                         'total_accel_sensor_1' : [float(dataset[i][13]) for i in range(len(dataset))],
                         'total_accel_sensor_2' : [float(dataset[i][14]) for i in range(len(dataset))],
                         'total_accel_sensor_4' : [float(dataset[i][15]) for i in range(len(dataset))]})
-        
+
     return dataset
 
 # Evaluation of roll, pitch and acceleration vector for each record of the dataset
@@ -136,6 +136,7 @@ def sample_split(sample,clas,name):
         # appending to the empty data frame the new row
         new_sample = variance_evaluation(window)
         new_sample = split_classes(new_sample)
+        print new_sample
         new_sample = acceleration_mean_stdev(new_sample)
 
         user = new_sample['user']
@@ -217,11 +218,11 @@ def feature_selection():
         data_class = data[data.classes == clas]
         for name in subjects:
             data_class_name = data_class[data_class.user == name]
-            data_class_name = discretize(data_class_name)
 
             data_class_name.drop(columns=['user','gender','age','height','weight','bmi','total_accel_sensor_3','classes','roll4','pitch4'], axis=1, inplace=True)
-
+            data_class_name = discretize(data_class_name)
             for index,row in data_class_name.iterrows():
+                print row['sitting'],row['sittingdown'],row['standing'],row['standingup'],row['walking']
                 with open('data_discrete.csv','a') as csvFile:
                     row_ = [row['acceleration_mean'], row['acceleration_stdev'], row['pitch1'],row['pitch2'],row['pitch3'],row['roll1'],row['roll2'],row['roll3'],row['sitting'],row['sittingdown'],row['standing'],row['standingup'],row['walking'],row['total_accel_sensor_1'],row['total_accel_sensor_2'],row['total_accel_sensor_4']]
                     writer = csv.writer(csvFile)
@@ -231,6 +232,21 @@ def feature_selection():
 # discretize the module of acceleration of each accelerometer
 def discretize(data):
     n=10 # cercare di capire bene quale n usare
+
+    #prova
+    data['acceleration_mean'] = pd.Series(pd.cut(x=data['acceleration_mean'], bins=100, labels=list(range(100))))
+    data['acceleration_stdev'] = pd.Series(pd.cut(x=data['acceleration_stdev'], bins=100, labels=list(range(100))))
+    data['pitch2'] = pd.Series(pd.cut(x=data['pitch2'], bins=n, labels=list(range(n))))
+    data['pitch3'] = pd.Series(pd.cut(x=data['pitch3'], bins=n, labels=list(range(n))))
+    data['roll1'] = pd.Series(pd.cut(x=data['roll1'], bins=n, labels=list(range(n))))
+    data['roll2'] = pd.Series(pd.cut(x=data['roll2'], bins=n, labels=list(range(n))))
+    data['roll3'] = pd.Series(pd.cut(x=data['roll3'], bins=n, labels=list(range(n))))
+    data['total_accel_sensor_2'] = pd.Series(pd.cut(x=data['total_accel_sensor_2'], bins=n, labels=list(range(n))))
+
+
+    #prova
+
+
     data['total_accel_sensor_1'] = pd.Series(pd.cut(x=data['total_accel_sensor_1'], bins=n, labels=list(range(n))))
     data['total_accel_sensor_4'] = pd.Series(pd.cut(x=data['total_accel_sensor_4'], bins=n, labels=list(range(n))))
     data['pitch1'] = pd.Series(pd.cut(x=data['pitch1'], bins=n, labels=list(range(n))))
