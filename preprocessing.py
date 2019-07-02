@@ -220,7 +220,7 @@ def feature_selection():
             data_class_name = data_class[data_class.user == name]
 
             data_class_name.drop(columns=['user','gender','age','height','weight','bmi','total_accel_sensor_3','classes','roll4','pitch4'], axis=1, inplace=True)
-            data_class_name = discretize(data_class_name)
+            #data_class_name = discretize(data_class_name)
             for index,row in data_class_name.iterrows():
                 print row['sitting'],row['sittingdown'],row['standing'],row['standingup'],row['walking']
                 with open('data_discrete.csv','a') as csvFile:
@@ -231,7 +231,7 @@ def feature_selection():
 
 # discretize the module of acceleration of each accelerometer
 def discretize(data):
-    n=10 # cercare di capire bene quale n usare
+    n=4000# cercare di capire bene quale n usare
 
     #prova
     data['acceleration_mean'] = pd.Series(pd.cut(x=data['acceleration_mean'], bins=100, labels=list(range(100))))

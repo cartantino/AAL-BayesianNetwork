@@ -18,7 +18,7 @@ ax_or.set_xticklabels(
     horizontalalignment='right')
 
 plt.savefig('plot/corr_mat_original_dataset')
-
+'''
 #CORRELATION MATRIX OF THE DISCRETIZED DATASET
 dataframe_dis = preprocessing.load_data_discrete()
 plt.close()
@@ -33,7 +33,7 @@ ax.set_xticklabels(
 
 plt.savefig('plot/corr_mat_discret_dataset')
 
-
+'''
 #CORRELATION MATRIX OF THE MANIPULATED DATASET
 dataframe_man = preprocessing.load_data_sampled()
 plt.close()
@@ -47,6 +47,9 @@ ax.set_xticklabels(
     horizontalalignment='right')
 
 plt.savefig('plot/corr_mat_sampled_dataset')
+sns.set(style="ticks")
+plot3 = sns.pairplot(dataframe_man, hue="classes")
+plt.savefig('plot/plot_fighi_e_dove_trovarli')
 '''
 # ALL THE POSSIBLE PLOTS
 sns.pairplot(dataframe_dis)
@@ -62,6 +65,8 @@ for clas in classes:
 
 #MEAN ACCELERATION
 
-mean = np.mean(dataframe_man['total_accel_sensor_1'])
-plot = sns.lmplot(x="total_accel_sensor_1", y="total_accel_sensor_1", data=dataframe_man)
-plt.show()
+# mean = np.mean(dataframe_man['total_accel_sensor_1'])
+# plot = sns.lmplot(x="total_accel_sensor_1", y="total_accel_sensor_1", data=dataframe_man)
+# plt.show()
+
+
