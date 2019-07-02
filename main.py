@@ -129,7 +129,7 @@ def create_BN_model(data):
 
     start_time = time.time()
     AAL_model_estimated = BayesianModel(best_model.edges())
-    AAL_model_estimated.fit(data, estimator=BayesianEstimator, prior_type="K2")
+    AAL_model_estimated.fit(data, estimator=BayesianEstimator, prior_type="BDeu")
     end_time = time.time()
     pl_time = end_time - start_time
         
