@@ -98,21 +98,7 @@ def createBN(train,test,resultlist):
    
 '''
 
-def resultsBN(test,resultlist):
-    reader = BIFReader('model_1000.bif')
-    model = reader.get_model()
 
-    pred = model.predict(test).as_matrix()
-    pred_probs = model.predict_probability(test)
-
-    exact = 0
-    for i in range(len(resultlist)):
-        print("pos:", i, "- expected: ",resultlist[i], "- predicted: ", pred[i][0] )
-        if resultlist[i] == pred[i][0]:
-            exact += 1
-
-    brumss = float(exact)/float(len(resultlist))
-    print("accuracy: ", brumss)
 
 
 def print_model(edges):
@@ -155,7 +141,7 @@ def create_BN_model(data):
     pl_time = end_time - start_time
 
     AAL_model_data = BIFWriter(AAL_model_estimated)
-    AAL_model_data.write_bif('Modelli/model_normalized.bif')
+    AAL_model_data.write_bif('Modelli/model_normalized_20.bif')
 
 
 
@@ -174,8 +160,8 @@ if __name__ == "__main__":
     best_model, total_time = create_BN_model(sampled_dataset)
 
     end_time = datetime.now() - start_time
-    print("Total time elapsed HC : " + str(end_time.hour) + "." + str(end_time.minute) + "." + str(end_time.second))
-
+    #print("Total time elapsed HC : " + str(end_time.hour) + "." + str(end_time.minute) + "." + str(end_time.second))
+    print(str(end_time))
 
 
     #train, test, resultlist = getAccelometersData()

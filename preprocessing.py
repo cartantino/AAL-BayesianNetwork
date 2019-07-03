@@ -253,7 +253,7 @@ def feature_selection():
 
 # discretize the module of acceleration of each accelerometer
 def discretize(data):
-    n=10# cercare di capire bene quale n usare
+    n=20# cercare di capire bene quale n usare
 
     #prova
     data['acceleration_mean'] = pd.Series(pd.cut(x=data['acceleration_mean'], bins=n, labels=list(range(n))))
