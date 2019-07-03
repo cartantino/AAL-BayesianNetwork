@@ -68,3 +68,4 @@ for clas in classes:
 # mean = np.mean(dataframe_man['total_accel_sensor_1'])
 # plot = sns.lmplot(x="total_accel_sensor_1", y="total_accel_sensor_1", data=dataframe_man)
 # plt.show()
+

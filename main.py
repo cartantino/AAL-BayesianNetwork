@@ -95,8 +95,7 @@ def createBN(train,test,resultlist):
     print("accuracy: ", brumss)
 
     #using BIF
-    #model_data = BIFWriter(model)
-    #model_data.write_bif('model_1000.bif')
+   
 '''
 
 def resultsBN(test,resultlist):
@@ -155,6 +154,8 @@ def create_BN_model(data):
     end_time = time.time()
     pl_time = end_time - start_time
 
+    AAL_model_data = BIFWriter(AAL_model_estimated)
+    AAL_model_data.write_bif('Modelli/model_normalized.bif')
 
 
 

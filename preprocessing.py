@@ -76,7 +76,7 @@ def load_data_sampled():
 
 
 def load_data_discrete():
-    filename = 'data_discrete.csv'
+    filename = 'data_discrete_2.csv'
     raw_data = open(filename, 'rt')
     reader = csv.reader(raw_data, delimiter = ',')
     x = list(reader)
@@ -93,7 +93,7 @@ def load_data_discrete():
                         'sitting' : [int(dataset[i][8]) for i in range(len(dataset))],
                         'sittingdown' : [int(dataset[i][9]) for i in range(len(dataset))],
                         'standing' : [int(dataset[i][10]) for i in range(len(dataset))],
-                        'standingup' : [int(dataset[i][1]) for i in range(len(dataset))],
+                        'standingup' : [int(dataset[i][11]) for i in range(len(dataset))],
                         'walking' : [int(dataset[i][12]) for i in range(len(dataset))],
                         'total_accel_sensor_1' : [float(dataset[i][13]) for i in range(len(dataset))],
                         'total_accel_sensor_2' : [float(dataset[i][14]) for i in range(len(dataset))],
@@ -198,13 +198,12 @@ def variance_evaluation(subset):
         # print("\n DOPO: \n")
         #subset[field] = (subset[field] - mean)/dev_std
         
+        ## STANDARDIZZAZIONE
         max_val = np.max(subset[field])
         min_val = np.min(subset[field])
         subset[field] = (subset[field] - min_val) / (max_val - min_val)
 
-        print(subset[field])
-
-        #dioporco = input("\n\n\nta che caldo")
+        
         new_row[field] = np.var(subset[field])
     
     return new_row
@@ -244,17 +243,17 @@ def feature_selection():
             data_class_name = data_class[data_class.user == name]
 
             data_class_name.drop(columns=['user','gender','age','height','weight','bmi','total_accel_sensor_3','classes','roll4','pitch4'], axis=1, inplace=True)
-            #data_class_name = discretize(data_class_name)
+            data_class_name = discretize(data_class_name)
             for index,row in data_class_name.iterrows():
-                with open('data_discrete.csv','a') as csvFile:
-                    row_ = ['acceleration_mean', 'acceleration_stdev', 'pitch1','pitch2','pitch3','roll1','roll2','roll3','sitting','sittingdown','standing','standingup','walking','total_accel_sensor_1','total_accel_sensor_2','total_accel_sensor_4']
+                with open('data_discrete_2.csv','a') as csvFile:
+                    row_ = [row['acceleration_mean'], row['acceleration_stdev'], row['pitch1'],row['pitch2'],row['pitch3'],row['roll1'],row['roll2'],row['roll3'],row['sitting'],row['sittingdown'],row['standing'],row['standingup'],row['walking'],row['total_accel_sensor_1'],row['total_accel_sensor_2'],row['total_accel_sensor_4']]
                     writer = csv.writer(csvFile)
                     writer.writerow(row_)
                 csvFile.close()
 
 # discretize the module of acceleration of each accelerometer
 def discretize(data):
-    n=100# cercare di capire bene quale n usare
+    n=10# cercare di capire bene quale n usare
 
     #prova
     data['acceleration_mean'] = pd.Series(pd.cut(x=data['acceleration_mean'], bins=n, labels=list(range(n))))
@@ -272,18 +271,18 @@ def discretize(data):
     return data
 
 if __name__ == '__main__':
-    #FEATURE EXTRACTION
+    # #FEATURE EXTRACTION
     #Loading of the dataset
-    dataset = load_dataset()
+    #dataset = load_dataset()
     #Evaluation of roll pitch and acceleration vector for any point at any time
-    dataset = features_extraction(dataset)
+    #dataset = features_extraction(dataset)
     #Save data into a csv
-    dataset.to_csv('csv/measure_dataset_2.csv', sep = ';', index=False)
+    #dataset.to_csv('csv/measure_dataset_2.csv', sep = ';', index=False)
     #sample dataset by class
-    sample_dataset(dataset)
+    #sample_dataset(dataset)
 
-    dataset_prova = load_data_sampled()
-
+    #dataset_prova = load_data_sampled()
+    #dataset_prova.to_csv('csv/porcatroia_2.csv', sep = ';', index=False)
 
     #FEATURE SELECTION
-    #feature_selection()
+    feature_selection()
