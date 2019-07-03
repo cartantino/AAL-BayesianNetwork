@@ -38,7 +38,7 @@ def load_dataset():
 
 #load dataset_sampled with features evaluated before
 def load_data_sampled():
-    filename = 'data_sampled.csv'
+    filename = 'data_sampled_2.csv'
     raw_data = open(filename, 'rt')
     reader = csv.reader(raw_data, delimiter = ',')
     x = list(reader)
@@ -101,6 +101,11 @@ def load_data_discrete():
 
     return dataset
 
+
+
+
+
+
 # Evaluation of roll, pitch and acceleration vector for each record of the dataset
 def features_extraction(dataset):
     for i in range(1,5):
@@ -120,6 +125,7 @@ def sample_dataset(dataset_feature):
             dataset_class_name.drop(columns=['x1','y1','z1','x2','y2','z2','x3','y3','z3','x4','y4','z4'], axis=1, inplace=True)
             dataset_class_name.to_csv('csv/' + clas + '_' + name + '_dataset.csv', sep = ';', index=False)
             sample_split(dataset_class_name,clas,name)
+
 
 # split dataset in relation of the class predicted and the user
 def sample_split(sample,clas,name):
@@ -166,11 +172,12 @@ def sample_split(sample,clas,name):
         acceleration_mean = new_sample['acceleration_mean']
         acceleration_stdev = new_sample['acceleration_stdev']
 
-        with open('data_sampled.csv','a') as csvFile:
+        with open('data_sampled_2.csv','a') as csvFile:
             row = [user, gender, age, height, weight, bmi, roll1, pitch1, roll2, pitch2, roll3, pitch3, roll4, pitch4, total_accel_sensor_1, total_accel_sensor_2, total_accel_sensor_3, total_accel_sensor_4,classes,sittingdown, standingup, walking, standing, sitting, acceleration_mean, acceleration_stdev]
             writer = csv.writer(csvFile)
             writer.writerow(row)
         csvFile.close()
+
 
 # evaluate variance of the eight rows in input
 def variance_evaluation(subset):
@@ -256,13 +263,14 @@ def discretize(data):
 if __name__ == '__main__':
     #FEATURE EXTRACTION
     #Loading of the dataset
-    #dataset = load_dataset()
+    dataset = load_dataset()
     #Evaluation of roll pitch and acceleration vector for any point at any time
-    #dataset = features_extraction(dataset)
+    dataset = features_extraction(dataset)
     #Save data into a csv
-    #dataset.to_csv('csv/measure_dataset.csv', sep = ';', index=False)
+    dataset.to_csv('csv/measure_dataset_2.csv', sep = ';', index=False)
     #sample dataset by class
-    #sample_dataset(dataset)
+    sample_dataset(dataset)
 
+    dataset_prova = load_data_sampled()
     #FEATURE SELECTION
-    feature_selection()
+    #feature_selection()
