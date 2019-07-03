@@ -130,7 +130,7 @@ def sample_dataset(dataset_feature):
 # split dataset in relation of the class predicted and the user
 def sample_split(sample,clas,name):
     sample.index = [i for i in range(len(sample)) ]
-    l = len(sample)/8
+    l = int(len(sample)/8)
 
     for i in range(l):
         k = i*8
@@ -140,9 +140,11 @@ def sample_split(sample,clas,name):
             window = sample.iloc[k:k+8,:]
 
         # appending to the empty data frame the new row
+
         new_sample = variance_evaluation(window)
+
+        #adding 5 columns, one for each class
         new_sample = split_classes(new_sample)
-        print new_sample
         new_sample = acceleration_mean_stdev(new_sample)
 
         user = new_sample['user']
@@ -186,10 +188,17 @@ def variance_evaluation(subset):
     for field in ['user', 'gender', 'age', 'height', 'weight', 'bmi', 'classes']:
         new_row[field] = subset[field].iloc[0]
 
-    for field in ['roll1', 'pitch1', 'roll2', 'pitch2', 'roll3', 'pitch3','roll4', 'pitch4','total_accel_sensor_1',
-                 'total_accel_sensor_2','total_accel_sensor_3','total_accel_sensor_4']:
-        new_row[field] = np.var(subset[field])
+    for field in ['roll1', 'pitch1', 'roll2', 'pitch2', 'roll3', 'pitch3','roll4', 'pitch4','total_accel_sensor_1','total_accel_sensor_2','total_accel_sensor_3','total_accel_sensor_4']:
+        dev_std = np.std(subset[field])
+        print("\ndev_std: " + str(dev_std) )
+        mean = np.mean(subset[field])
+        print("\nmean : " + str(mean))
+        subset[field] = (subset[field] - mean)/dev_std
+        print("\n" + subset[field])
 
+        dioporco = input("\n\n\nta che caldo")
+        new_row[field] = np.var(subset[field])
+    
     return new_row
 
 # split the column classes in 5 columns( sittingdown, standingup, walking, standing, sitting )
@@ -229,31 +238,25 @@ def feature_selection():
             data_class_name.drop(columns=['user','gender','age','height','weight','bmi','total_accel_sensor_3','classes','roll4','pitch4'], axis=1, inplace=True)
             #data_class_name = discretize(data_class_name)
             for index,row in data_class_name.iterrows():
-                print row['sitting'],row['sittingdown'],row['standing'],row['standingup'],row['walking']
                 with open('data_discrete.csv','a') as csvFile:
-                    row_ = [row['acceleration_mean'], row['acceleration_stdev'], row['pitch1'],row['pitch2'],row['pitch3'],row['roll1'],row['roll2'],row['roll3'],row['sitting'],row['sittingdown'],row['standing'],row['standingup'],row['walking'],row['total_accel_sensor_1'],row['total_accel_sensor_2'],row['total_accel_sensor_4']]
+                    row_ = ['acceleration_mean', 'acceleration_stdev', 'pitch1','pitch2','pitch3','roll1','roll2','roll3','sitting','sittingdown','standing','standingup','walking','total_accel_sensor_1','total_accel_sensor_2','total_accel_sensor_4']
                     writer = csv.writer(csvFile)
                     writer.writerow(row_)
                 csvFile.close()
 
 # discretize the module of acceleration of each accelerometer
 def discretize(data):
-    n=4000# cercare di capire bene quale n usare
+    n=100# cercare di capire bene quale n usare
 
     #prova
-    data['acceleration_mean'] = pd.Series(pd.cut(x=data['acceleration_mean'], bins=100, labels=list(range(100))))
-    data['acceleration_stdev'] = pd.Series(pd.cut(x=data['acceleration_stdev'], bins=100, labels=list(range(100))))
+    data['acceleration_mean'] = pd.Series(pd.cut(x=data['acceleration_mean'], bins=n, labels=list(range(n))))
+    data['acceleration_stdev'] = pd.Series(pd.cut(x=data['acceleration_stdev'], bins=n, labels=list(range(n))))
     data['pitch2'] = pd.Series(pd.cut(x=data['pitch2'], bins=n, labels=list(range(n))))
     data['pitch3'] = pd.Series(pd.cut(x=data['pitch3'], bins=n, labels=list(range(n))))
     data['roll1'] = pd.Series(pd.cut(x=data['roll1'], bins=n, labels=list(range(n))))
     data['roll2'] = pd.Series(pd.cut(x=data['roll2'], bins=n, labels=list(range(n))))
     data['roll3'] = pd.Series(pd.cut(x=data['roll3'], bins=n, labels=list(range(n))))
     data['total_accel_sensor_2'] = pd.Series(pd.cut(x=data['total_accel_sensor_2'], bins=n, labels=list(range(n))))
-
-
-    #prova
-
-
     data['total_accel_sensor_1'] = pd.Series(pd.cut(x=data['total_accel_sensor_1'], bins=n, labels=list(range(n))))
     data['total_accel_sensor_4'] = pd.Series(pd.cut(x=data['total_accel_sensor_4'], bins=n, labels=list(range(n))))
     data['pitch1'] = pd.Series(pd.cut(x=data['pitch1'], bins=n, labels=list(range(n))))
@@ -270,7 +273,8 @@ if __name__ == '__main__':
     dataset.to_csv('csv/measure_dataset_2.csv', sep = ';', index=False)
     #sample dataset by class
     sample_dataset(dataset)
-
+    
     dataset_prova = load_data_sampled()
+
     #FEATURE SELECTION
     #feature_selection()
