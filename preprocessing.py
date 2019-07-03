@@ -193,8 +193,11 @@ def variance_evaluation(subset):
         print("\ndev_std: " + str(dev_std) )
         mean = np.mean(subset[field])
         print("\nmean : " + str(mean))
+        print("PRIMA: \n")
+        print(subset[field])
+        print("\n DOPO: \n")
         subset[field] = (subset[field] - mean)/dev_std
-        print("\n" + subset[field])
+        print(subset[field])
 
         dioporco = input("\n\n\nta che caldo")
         new_row[field] = np.var(subset[field])
@@ -273,8 +276,9 @@ if __name__ == '__main__':
     dataset.to_csv('csv/measure_dataset_2.csv', sep = ';', index=False)
     #sample dataset by class
     sample_dataset(dataset)
-    
+
     dataset_prova = load_data_sampled()
+
 
     #FEATURE SELECTION
     #feature_selection()
