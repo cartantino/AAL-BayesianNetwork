@@ -189,17 +189,22 @@ def variance_evaluation(subset):
         new_row[field] = subset[field].iloc[0]
 
     for field in ['roll1', 'pitch1', 'roll2', 'pitch2', 'roll3', 'pitch3','roll4', 'pitch4','total_accel_sensor_1','total_accel_sensor_2','total_accel_sensor_3','total_accel_sensor_4']:
-        dev_std = np.std(subset[field])
-        print("\ndev_std: " + str(dev_std) )
-        mean = np.mean(subset[field])
-        print("\nmean : " + str(mean))
-        print("PRIMA: \n")
-        print(subset[field])
-        print("\n DOPO: \n")
-        subset[field] = (subset[field] - mean)/dev_std
+        #dev_std = np.std(subset[field])
+        # print("\ndev_std: " + str(dev_std) )
+        #mean = np.mean(subset[field])
+        # print("\nmean : " + str(mean))
+        # print("PRIMA: \n")
+        # print(subset[field])
+        # print("\n DOPO: \n")
+        #subset[field] = (subset[field] - mean)/dev_std
+        
+        max_val = np.max(subset[field])
+        min_val = np.min(subset[field])
+        subset[field] = (subset[field] - min_val) / (max_val - min_val)
+
         print(subset[field])
 
-        dioporco = input("\n\n\nta che caldo")
+        #dioporco = input("\n\n\nta che caldo")
         new_row[field] = np.var(subset[field])
     
     return new_row
