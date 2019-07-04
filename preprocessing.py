@@ -38,7 +38,7 @@ def load_dataset():
 
 #load dataset_sampled with features evaluated before
 def load_data_sampled():
-    filename = 'data_sampled_2.csv'
+    filename = 'data_sampled.csv'
     raw_data = open(filename, 'rt')
     reader = csv.reader(raw_data, delimiter = ',')
     x = list(reader)
@@ -76,7 +76,7 @@ def load_data_sampled():
 
 
 def load_data_discrete():
-    filename = 'data_discrete_2.csv'
+    filename = 'data_discrete.csv'
     raw_data = open(filename, 'rt')
     reader = csv.reader(raw_data, delimiter = ',')
     x = list(reader)
@@ -123,7 +123,7 @@ def sample_dataset(dataset_feature):
         for name in subjects:
             dataset_class_name = dataset_class[dataset_feature.user == name]
             dataset_class_name.drop(columns=['x1','y1','z1','x2','y2','z2','x3','y3','z3','x4','y4','z4'], axis=1, inplace=True)
-            dataset_class_name.to_csv('csv/' + clas + '_' + name + '_dataset.csv', sep = ';', index=False)
+            #dataset_class_name.to_csv('csv/' + clas + '_' + name + '_dataset.csv', sep = ';', index=False)
             sample_split(dataset_class_name,clas,name)
 
 
@@ -174,7 +174,7 @@ def sample_split(sample,clas,name):
         acceleration_mean = new_sample['acceleration_mean']
         acceleration_stdev = new_sample['acceleration_stdev']
 
-        with open('data_sampled_2.csv','a') as csvFile:
+        with open('data_sampled.csv','a') as csvFile:
             row = [user, gender, age, height, weight, bmi, roll1, pitch1, roll2, pitch2, roll3, pitch3, roll4, pitch4, total_accel_sensor_1, total_accel_sensor_2, total_accel_sensor_3, total_accel_sensor_4,classes,sittingdown, standingup, walking, standing, sitting, acceleration_mean, acceleration_stdev]
             writer = csv.writer(csvFile)
             writer.writerow(row)
@@ -197,15 +197,15 @@ def variance_evaluation(subset):
         # print(subset[field])
         # print("\n DOPO: \n")
         #subset[field] = (subset[field] - mean)/dev_std
-        
+
         ## STANDARDIZZAZIONE
         max_val = np.max(subset[field])
         min_val = np.min(subset[field])
         subset[field] = (subset[field] - min_val) / (max_val - min_val)
 
-        
+
         new_row[field] = np.var(subset[field])
-    
+
     return new_row
 
 # split the column classes in 5 columns( sittingdown, standingup, walking, standing, sitting )
@@ -245,7 +245,7 @@ def feature_selection():
             data_class_name.drop(columns=['user','gender','age','height','weight','bmi','total_accel_sensor_3','classes','roll4','pitch4'], axis=1, inplace=True)
             data_class_name = discretize(data_class_name)
             for index,row in data_class_name.iterrows():
-                with open('data_discrete_2.csv','a') as csvFile:
+                with open('data_discrete.csv','a') as csvFile:
                     row_ = [row['acceleration_mean'], row['acceleration_stdev'], row['pitch1'],row['pitch2'],row['pitch3'],row['roll1'],row['roll2'],row['roll3'],row['sitting'],row['sittingdown'],row['standing'],row['standingup'],row['walking'],row['total_accel_sensor_1'],row['total_accel_sensor_2'],row['total_accel_sensor_4']]
                     writer = csv.writer(csvFile)
                     writer.writerow(row_)
@@ -273,13 +273,14 @@ def discretize(data):
 if __name__ == '__main__':
     # #FEATURE EXTRACTION
     #Loading of the dataset
-    #dataset = load_dataset()
+    dataset = load_dataset()
     #Evaluation of roll pitch and acceleration vector for any point at any time
-    #dataset = features_extraction(dataset)
+    dataset = features_extraction(dataset)
+
     #Save data into a csv
     #dataset.to_csv('csv/measure_dataset_2.csv', sep = ';', index=False)
     #sample dataset by class
-    #sample_dataset(dataset)
+    sample_dataset(dataset)
 
     #dataset_prova = load_data_sampled()
     #dataset_prova.to_csv('csv/porcatroia_2.csv', sep = ';', index=False)
