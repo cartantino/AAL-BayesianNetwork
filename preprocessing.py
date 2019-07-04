@@ -234,6 +234,10 @@ def acceleration_mean_stdev(sample):
 
 def feature_selection():
     data = load_data_sampled()
+    with open('data_discrete.csv', "w") as csvFile:
+        writer = csv.writer(csvFile)
+        writer.writerow(['acceleration_mean, acceleration_stdev, pitch1,pitch2,pitch3,roll1,roll2,roll3,sitting,sittingdown,standing,standingup,walking,total_accel_sensor_1,total_accel_sensor_2,total_accel_sensor_4'])
+    csvFile.close()
 
     classes = ['sittingdown','standingup','walking','standing','sitting']
     subjects = ['katia','debora','wallace','jose_carlos']
@@ -253,7 +257,7 @@ def feature_selection():
 
 # discretize the module of acceleration of each accelerometer
 def discretize(data):
-    n=100# cercare di capire bene quale n usare
+    n=20# cercare di capire bene quale n usare
 
     #prova
     data['acceleration_mean'] = pd.Series(pd.cut(x=data['acceleration_mean'], bins=n, labels=list(range(n))))
@@ -273,14 +277,14 @@ def discretize(data):
 if __name__ == '__main__':
     # #FEATURE EXTRACTION
     #Loading of the dataset
-    dataset = load_dataset()
+    #dataset = load_dataset()
     #Evaluation of roll pitch and acceleration vector for any point at any time
-    dataset = features_extraction(dataset)
+    #dataset = features_extraction(dataset)
 
     #Save data into a csv
     #dataset.to_csv('csv/measure_dataset_2.csv', sep = ';', index=False)
     #sample dataset by class
-    sample_dataset(dataset)
+    #sample_dataset(dataset)
 
     #dataset_prova = load_data_sampled()
     #dataset_prova.to_csv('csv/porcatroia_2.csv', sep = ';', index=False)

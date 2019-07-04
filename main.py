@@ -17,91 +17,6 @@ import hillclimb
 from sklearn.model_selection import train_test_split
 
 
-'''
-# Estrae dal dataset i valori delle coordinate dei vari accelerometri e divide il dataset in training(80%) e test(20%)
-def getAccelometersData():
-    dataset = loadDataset()
-
-    data = pd.DataFrame(data={'x1': [ int(dataset[i][6]) for i in range(len(dataset)) ],
-                              'y1': [ int(dataset[i][7]) for i in range(len(dataset)) ],
-                              'z1': [ int(dataset[i][8]) for i in range(len(dataset)) ],
-                              'x2': [ int(dataset[i][9]) for i in range(len(dataset)) ],
-                              'y2': [ int(dataset[i][10]) for i in range(len(dataset)) ],
-                              'z2': [ int(dataset[i][11]) for i in range(len(dataset)) ],
-                              'x3': [ int(dataset[i][12]) for i in range(len(dataset)) ],
-                              'y3': [ int(dataset[i][13]) for i in range(len(dataset)) ],
-                              'z3': [ int(dataset[i][14]) for i in range(len(dataset)) ],
-                              'x4': [ int(dataset[i][15]) for i in range(len(dataset)) ],
-                              'y4': [ int(dataset[i][16]) for i in range(len(dataset)) ],
-                              'z4': [ int(dataset[i][17]) for i in range(len(dataset)) ]})
-
-    classes = []
-    a = ['sittingdown', 'standingup', 'walking', 'standing', 'sitting']
-    for i in range(len(dataset)):
-        classes.append(a.index(dataset[i][18]))
-    print(classes)
-    input("dd")
-
-    data['classes'] = classes
-
-    msk = np.random.rand(len(data)) < 0.8
-    train = data[msk]
-    test = data[~msk]
-    results = test.loc[:, 'classes'].as_matrix()
-    test = test.drop(columns='classes')
-
-    pprint(train)
-    pprint(test)
-    print(results)
-
-    return train, test, results
-'''
-'''
-def createBN(train,test,resultlist):
-    trainstart = datetime.now()
-    print("\n\nStart-time: ", trainstart)
-
-    #structure learning
-    hc = HillClimbSearch(train, scoring_method=BicScore(train))
-    best_model = hc.estimate()
-    edges = best_model.edges()
-
-    print(sorted(best_model.nodes()))
-    print(sorted(best_model.edges()))
-
-    model = BayesianModel(edges)
-
-
-    #parameter learning
-    model.fit(train, estimator = BayesianEstimator, prior_type = "BDeu")
-    print("\nmodel", model)
-
-    trainend = datetime.now()
-    print("End-time: ", trainend,"\n\n")
-
-    pred = model.predict(test)
-    pred_probs = model.predict_probability(test)
-
-    print("\nresultlist\n",resultlist)
-    print("\pred\n",pred)
-    print("\pred\n",pred_probs)
-
-    exact = 0
-    for i in range(len(resultlist)):
-        print("pos:", i, "- expected: ",resultlist[i], "- predicted: ", pred[i][0] )
-        if resultlist[i] == pred[i][0]:
-            exact += 1
-
-    brumss = float(exact)/float(len(resultlist))
-    print("accuracy: ", brumss)
-
-    #using BIF
-   
-'''
-
-
-
-
 def print_model(edges):
     print(edges)
     import networkx as nx
@@ -116,7 +31,7 @@ def print_model(edges):
     nx.draw_networkx_edges(G, pos, edge_color='b', arrows=True)
     plt.show()
 
-def create_BN_model(data):
+def create_BN_model(data, train):
     #structure learning
     print("Structure learning")
     start_time = time.time()
@@ -137,12 +52,12 @@ def create_BN_model(data):
 
     start_time = time.time()
     AAL_model_estimated = BayesianModel(best_model.edges())
-    AAL_model_estimated.fit(data, estimator=BayesianEstimator, prior_type="BDeu")
+    AAL_model_estimated.fit(train, estimator=BayesianEstimator, prior_type="BDeu")
     end_time = time.time()
     pl_time = end_time - start_time
 
     AAL_model_data = BIFWriter(AAL_model_estimated)
-    AAL_model_data.write_bif('Modelli/model_not_discretized.bif')
+    AAL_model_data.write_bif('Modelli/model_afterclean.bif')
 
     return (AAL_model_estimated , sl_time + pl_time)
 
@@ -150,17 +65,17 @@ def create_BN_model(data):
 def train_test(dataset):
     classes=['sitting', 'sittingdown', 'standing', 'standingup', 'walking']
 
-    header = ['acceleration_mean', 'acceleration_stdev', 'pitch1', 'pitch2', 'pitch3', 'roll1', 'roll2', 'roll3', 
-                'sitting', 'sittingdown', 'standing', 'standingup', 'walking', 'total_accel_sensor_1', 'total_accel_sensor_2', 
+    header = ['acceleration_mean', 'acceleration_stdev', 'pitch1', 'pitch2', 'pitch3', 'roll1', 'roll2', 'roll3',
+                'sitting', 'sittingdown', 'standing', 'standingup', 'walking', 'total_accel_sensor_1', 'total_accel_sensor_2',
                 'total_accel_sensor_4']
 
     #write header in train and test csv
-    with open('train_dataset.csv', "w", newline='') as csvFile:
+    with open('train_dataset.csv', "w") as csvFile:
         writer = csv.writer(csvFile)
         writer.writerow(header)
     csvFile.close()
 
-    with open('test_dataset.csv', "w", newline='') as csvFile:
+    with open('test_dataset.csv', "w") as csvFile:
         writer = csv.writer(csvFile)
         writer.writerow(header)
     csvFile.close()
@@ -168,18 +83,20 @@ def train_test(dataset):
     for cl in classes:
         #find in dataset one class at once
         c = dataset.loc[dataset[cl] == 1]
-        
+
         #training and testing of one class: 80% training, 20% testing of each class
         train, test = train_test_split(c, test_size=0.2)
 
         #append results in two csv, train and test
-        with open('train_dataset.csv', 'a', newline='') as csvFile:   
+        with open('train_dataset.csv', 'a') as csvFile:
             train.to_csv(csvFile, header=False, index=False)
         csvFile.close()
 
-        with open('test_dataset.csv', 'a', newline='') as csvFile:
+        with open('test_dataset.csv', 'a') as csvFile:
             test.to_csv(csvFile, header=False, index=False)
         csvFile.close()
+
+    return train, test
 
 
 if __name__ == "__main__":
@@ -190,10 +107,10 @@ if __name__ == "__main__":
     print("Starting time : "+ str(start_time.hour) + "." + str(start_time.minute) + "." + str(start_time.second))
 
     #Evaluation of the best model with hill_climb_search, all the data are processed
-    #best_model, total_time = create_BN_model(sampled_dataset)
 
     #train_test function
-    train_test(discrete_dataset)
+    train, test = train_test(discrete_dataset)
+    best_model, total_time = create_BN_model(discrete_dataset, train)
 
     end_time = datetime.now() - start_time
     #print("Total time elapsed HC : " + str(end_time.hour) + "." + str(end_time.minute) + "." + str(end_time.second))
