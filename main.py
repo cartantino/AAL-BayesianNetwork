@@ -172,13 +172,13 @@ def train_test(dataset):
         #training and testing of one class: 80% training, 20% testing of each class
         train, test = train_test_split(c, test_size=0.2)
 
-        #append of results in two csv, train and test
-        with open('train_dataset.csv', 'a', newline='') as csvFile:
-            train.to_csv(csvFile, header=False)
+        #append results in two csv, train and test
+        with open('train_dataset.csv', 'a', newline='') as csvFile:   
+            train.to_csv(csvFile, header=False, index=False)
         csvFile.close()
 
         with open('test_dataset.csv', 'a', newline='') as csvFile:
-            test.to_csv(csvFile, header=False)
+            test.to_csv(csvFile, header=False, index=False)
         csvFile.close()
 
 
