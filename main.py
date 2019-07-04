@@ -14,6 +14,7 @@ from pgmpy.readwrite import BIFWriter
 #warnings.filterwarnings('ignore')
 import preprocessing
 import hillclimb
+from sklearn.model_selection import train_test_split
 
 
 '''
@@ -102,7 +103,7 @@ def createBN(train,test,resultlist):
 
 
 def print_model(edges):
-    print edges
+    print(edges)
     import networkx as nx
     import matplotlib.pyplot as plt
 
@@ -143,18 +144,12 @@ def create_BN_model(data):
     AAL_model_data = BIFWriter(AAL_model_estimated)
     AAL_model_data.write_bif('Modelli/model_normalized_100.bif')
 
-
-
     return (AAL_model_estimated , sl_time + pl_time)
 
+#function to train and test discrete csv
+#def train_test(dataset):
 
 
-def training_test(data):
-
-
-
-
-    return train, test
 
 
 if __name__ == "__main__":
@@ -165,7 +160,7 @@ if __name__ == "__main__":
     print("Starting time : "+ str(start_time.hour) + "." + str(start_time.minute) + "." + str(start_time.second))
 
     #Evaluation of the best model with hill_climb_search, all the data are processed
-    best_model, total_time = create_BN_model(sampled_dataset)
+    #best_model, total_time = create_BN_model(sampled_dataset)
 
     end_time = datetime.now() - start_time
     #print("Total time elapsed HC : " + str(end_time.hour) + "." + str(end_time.minute) + "." + str(end_time.second))
