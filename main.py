@@ -141,7 +141,7 @@ def create_BN_model(data):
     pl_time = end_time - start_time
 
     AAL_model_data = BIFWriter(AAL_model_estimated)
-    AAL_model_data.write_bif('Modelli/model_normalized_100.bif')
+    AAL_model_data.write_bif('Modelli/model_not_discretized.bif')
 
 
 
@@ -149,12 +149,7 @@ def create_BN_model(data):
 
 
 
-def training_test(data):
 
-
-
-
-    return train, test
 
 
 if __name__ == "__main__":
