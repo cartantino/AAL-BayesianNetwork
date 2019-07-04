@@ -5,6 +5,7 @@ import pickle
 import pandas as pd
 import pickle
 import time, calendar, datetime
+from pgmpy.inference.ExactInference import VariableElimination
 from pprint import pprint #serve per fare la print di array e liste in maniera ordinata
 from datetime import datetime
 from pgmpy.models import BayesianModel
@@ -49,7 +50,8 @@ def create_BN_model(data):
     print("execution time in seconds:{}".format(sl_time))
     
     # Check if the model is ok, see documentation for further information
-    best_model.check_model()
+    if best_model.check_model():
+        print("Your network structure and CPD's are correctly defined. The probabilities in the columns sum to 1. Hill Climb worked fine!")
     edges = best_model.edges()m
     print_model(best_model.edges())
     AAL_model_data = BIFWriter(AAL_model_estimated)
@@ -101,9 +103,15 @@ def cpd_estimation(model, train):
     model = BayesianModel(best_model.edges())
     model.fit(train, estimator=BayesianEstimator, prior_type="BDeu")
     cpds = model.get_cpds()
+
+    #PRINT OF THE CPDs of the model
+    for cpd in model.get_cpds():
+        print("CPD of {variable}:".format(variable=cpd.variable))
+        print(cpd)
+
     return cpds
 
-
+def inference()
 
 if __name__ == "__main__":
     # Load of the dataset preprocessed before
@@ -121,5 +129,6 @@ if __name__ == "__main__":
 
     # Evaluation of the cpd of the model
     cpds = cpd_estimation(model, train)
-
+    model.add_cpds(cpds)
     # TODO Inferences on classes
+        
