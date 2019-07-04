@@ -147,20 +147,53 @@ def create_BN_model(data):
     return (AAL_model_estimated , sl_time + pl_time)
 
 #function to train and test discrete csv
-#def train_test(dataset):
+def train_test(dataset):
+    classes=['sitting', 'sittingdown', 'standing', 'standingup', 'walking']
 
+    header = ['acceleration_mean', 'acceleration_stdev', 'pitch1', 'pitch2', 'pitch3', 'roll1', 'roll2', 'roll3', 
+                'sitting', 'sittingdown', 'standing', 'standingup', 'walking', 'total_accel_sensor_1', 'total_accel_sensor_2', 
+                'total_accel_sensor_4']
 
+    #write header in train and test csv
+    with open('train_dataset.csv', "w", newline='') as csvFile:
+        writer = csv.writer(csvFile)
+        writer.writerow(header)
+    csvFile.close()
+
+    with open('test_dataset.csv', "w", newline='') as csvFile:
+        writer = csv.writer(csvFile)
+        writer.writerow(header)
+    csvFile.close()
+
+    for cl in classes:
+        #find in dataset one class at once
+        c = dataset.loc[dataset[cl] == 1]
+        
+        #training and testing of one class: 80% training, 20% testing of each class
+        train, test = train_test_split(c, test_size=0.2)
+
+        #append of results in two csv, train and test
+        with open('train_dataset.csv', 'a', newline='') as csvFile:
+            train.to_csv(csvFile, header=False)
+        csvFile.close()
+
+        with open('test_dataset.csv', 'a', newline='') as csvFile:
+            test.to_csv(csvFile, header=False)
+        csvFile.close()
 
 
 if __name__ == "__main__":
     # Load of the dataset preprocessed before
-    sampled_dataset = preprocessing.load_data_discrete()
+    discrete_dataset = preprocessing.load_data_discrete()
 
     start_time = datetime.now()
     print("Starting time : "+ str(start_time.hour) + "." + str(start_time.minute) + "." + str(start_time.second))
 
     #Evaluation of the best model with hill_climb_search, all the data are processed
     #best_model, total_time = create_BN_model(sampled_dataset)
+
+    #train_test function
+    train_test(discrete_dataset)
 
     end_time = datetime.now() - start_time
     #print("Total time elapsed HC : " + str(end_time.hour) + "." + str(end_time.minute) + "." + str(end_time.second))
