@@ -31,7 +31,7 @@ def print_model(edges):
     nx.draw_networkx_edges(G, pos, edge_color='b', arrows=True)
     plt.show()
 
-def create_BN_model(data, train):
+def create_BN_model(data):
     #structure learning
     print("Structure learning")
     start_time = time.time()
@@ -47,15 +47,11 @@ def create_BN_model(data, train):
     end_time = time.time()
     sl_time = end_time - start_time
     print("execution time in seconds:{}".format(sl_time))
-
+    
+    # Check if the model is ok, see documentation for further information
+    best_model.check_model()
+    edges = best_model.edges()m
     print_model(best_model.edges())
-
-    start_time = time.time()
-    AAL_model_estimated = BayesianModel(best_model.edges())
-    AAL_model_estimated.fit(train, estimator=BayesianEstimator, prior_type="BDeu")
-    end_time = time.time()
-    pl_time = end_time - start_time
-
     AAL_model_data = BIFWriter(AAL_model_estimated)
     AAL_model_data.write_bif('Modelli/model_afterclean.bif')
 
@@ -99,27 +95,31 @@ def train_test(dataset):
     return train, test
 
 
+
+def cpd_estimation(model, train):
+    print("Estimation of the cpds of the model")
+    model = BayesianModel(best_model.edges())
+    model.fit(train, estimator=BayesianEstimator, prior_type="BDeu")
+    cpds = model.get_cpds()
+    return cpds
+
+
+
 if __name__ == "__main__":
     # Load of the dataset preprocessed before
     discrete_dataset = preprocessing.load_data_discrete()
 
+    #Splitting dataset into train and test 80% - 20%
+    train, test = train_test(discrete_dataset)
+
+    #search for the best model using Hill Climb Algorithm, for further information look at the documentation
     start_time = datetime.now()
     print("Starting time : "+ str(start_time.hour) + "." + str(start_time.minute) + "." + str(start_time.second))
-
-    #Evaluation of the best model with hill_climb_search, all the data are processed
-
-    #train_test function
-    train, test = train_test(discrete_dataset)
-    best_model, total_time = create_BN_model(discrete_dataset, train)
-
+    model, total_time = create_BN_model(discrete_dataset)
     end_time = datetime.now() - start_time
-    #print("Total time elapsed HC : " + str(end_time.hour) + "." + str(end_time.minute) + "." + str(end_time.second))
     print(str(end_time))
 
+    # Evaluation of the cpd of the model
+    cpds = cpd_estimation(model, train)
 
-    #train, test, resultlist = getAccelometersData()
-    #createBN(train,test,resultlist)
-
-    #using BIF
-    #reader = BIFReader('model.bif')
-    #model = reader.get_model()
+    # TODO Inferences on classes
