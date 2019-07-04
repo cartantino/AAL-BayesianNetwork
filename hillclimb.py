@@ -43,7 +43,7 @@ class HillClimbSearch(StructureEstimator):
         super(HillClimbSearch, self).__init__(data, **kwargs)
 
     def _legal_operations(self, model, tabu_list=[], max_indegree=None):
-        print "_legal_operations"
+        print("_legal_operations")
         """Generates a list of legal (= not in tabu_list) graph modifications
         for a given model, together with their score changes. Possible graph modifications:
         (1) add, (2) remove, or (3) flip a single edge. For details on scoring
@@ -95,7 +95,7 @@ class HillClimbSearch(StructureEstimator):
                         yield(operation, score_delta)
 
     def estimate(self, start=None, tabu_length=0, max_indegree=None):
-        print "estimate"
+        print("estimate")
         """
         Performs local hill climb search to estimates the `BayesianModel` structure
         that has optimal score, according to the scoring method supplied in the constructor.
@@ -159,8 +159,8 @@ class HillClimbSearch(StructureEstimator):
                     best_score_delta = score_delta
 
 
-            print "current_model: ", current_model
-            print "best_score_delta < epsilon", best_score_delta, "<", epsilon
+            print("current_model: ", current_model)
+            print("best_score_delta < epsilon", best_score_delta, "<", epsilon)
             if best_operation is None or best_score_delta < epsilon:
                 break
             elif best_operation[0] == '+':
@@ -174,7 +174,5 @@ class HillClimbSearch(StructureEstimator):
                 current_model.remove_edge(X, Y)
                 current_model.add_edge(Y, X)
                 tabu_list = ([best_operation] + tabu_list)[:tabu_length]
-
-
 
         return current_model
