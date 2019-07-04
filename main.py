@@ -152,10 +152,6 @@ def create_BN_model(data):
 
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> d160b5807d9df18b34eb957836a595dc4b12a5f0
 if __name__ == "__main__":
     # Load of the dataset preprocessed before
     sampled_dataset = preprocessing.load_data_discrete()

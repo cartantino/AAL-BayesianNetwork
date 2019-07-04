@@ -76,7 +76,7 @@ def load_data_sampled():
 
 
 def load_data_discrete():
-    filename = 'data_only_normalized.csv'
+    filename = 'data_discrete_2.csv'
     raw_data = open(filename, 'rt')
     reader = csv.reader(raw_data, delimiter = ',')
     x = list(reader)
@@ -90,11 +90,11 @@ def load_data_discrete():
                         'roll1' : [float(dataset[i][5]) for i in range(len(dataset))],
                         'roll2' : [float(dataset[i][6]) for i in range(len(dataset))],
                         'roll3' : [float(dataset[i][7]) for i in range(len(dataset))],
-                        'sitting' : [float(dataset[i][8]) for i in range(len(dataset))],
-                        'sittingdown' : [float(dataset[i][9]) for i in range(len(dataset))],
-                        'standing' : [float(dataset[i][10]) for i in range(len(dataset))],
-                        'standingup' : [float(dataset[i][11]) for i in range(len(dataset))],
-                        'walking' : [float(dataset[i][12]) for i in range(len(dataset))],
+                        'sitting' : [int(dataset[i][8]) for i in range(len(dataset))],
+                        'sittingdown' : [int(dataset[i][9]) for i in range(len(dataset))],
+                        'standing' : [int(dataset[i][10]) for i in range(len(dataset))],
+                        'standingup' : [int(dataset[i][11]) for i in range(len(dataset))],
+                        'walking' : [int(dataset[i][12]) for i in range(len(dataset))],
                         'total_accel_sensor_1' : [float(dataset[i][13]) for i in range(len(dataset))],
                         'total_accel_sensor_2' : [float(dataset[i][14]) for i in range(len(dataset))],
                         'total_accel_sensor_4' : [float(dataset[i][15]) for i in range(len(dataset))]})
@@ -243,9 +243,9 @@ def feature_selection():
             data_class_name = data_class[data_class.user == name]
 
             data_class_name.drop(columns=['user','gender','age','height','weight','bmi','total_accel_sensor_3','classes','roll4','pitch4'], axis=1, inplace=True)
-            #data_class_name = discretize(data_class_name)
+            data_class_name = discretize(data_class_name)
             for index,row in data_class_name.iterrows():
-                with open('data_only_normalized.csv','a') as csvFile:
+                with open('data_discrete_2.csv','a') as csvFile:
                     row_ = [row['acceleration_mean'], row['acceleration_stdev'], row['pitch1'],row['pitch2'],row['pitch3'],row['roll1'],row['roll2'],row['roll3'],row['sitting'],row['sittingdown'],row['standing'],row['standingup'],row['walking'],row['total_accel_sensor_1'],row['total_accel_sensor_2'],row['total_accel_sensor_4']]
                     writer = csv.writer(csvFile)
                     writer.writerow(row_)
