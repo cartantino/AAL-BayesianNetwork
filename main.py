@@ -10,7 +10,7 @@ from pprint import pprint #serve per fare la print di array e liste in maniera o
 from datetime import datetime
 from pgmpy.models import BayesianModel
 from pgmpy.estimators import HillClimbSearch, BicScore, BayesianEstimator, K2Score
-from pgmpy.readwrite import BIFWriter
+from pgmpy.readwrite import BIFWriter, BIFReader
 #import warnings ## Remove all warning
 #warnings.filterwarnings('ignore')
 import preprocessing
@@ -52,7 +52,7 @@ def create_BN_model(data):
     # Check if the model is ok, see documentation for further information
     if best_model.check_model():
         print("Your network structure and CPD's are correctly defined. The probabilities in the columns sum to 1. Hill Climb worked fine!")
-    edges = best_model.edges()m
+    edges = best_model.edges()
     print_model(best_model.edges())
     AAL_model_data = BIFWriter(AAL_model_estimated)
     AAL_model_data.write_bif('Modelli/model_afterclean.bif')
@@ -109,7 +109,7 @@ def cpd_estimation(model, train):
         print("CPD of {variable}:".format(variable=cpd.variable))
         print(cpd)
 
-    return cpds
+    return cpds, model
 
 def inference()
 
@@ -120,15 +120,27 @@ if __name__ == "__main__":
     #Splitting dataset into train and test 80% - 20%
     train, test = train_test(discrete_dataset)
 
+    
+    #Load of the model we want to use to make inference
+
+    #Decommment these lines to create a new model
     #search for the best model using Hill Climb Algorithm, for further information look at the documentation
+    '''
     start_time = datetime.now()
     print("Starting time : "+ str(start_time.hour) + "." + str(start_time.minute) + "." + str(start_time.second))
     model, total_time = create_BN_model(discrete_dataset)
     end_time = datetime.now() - start_time
     print(str(end_time))
-
+    '''
     # Evaluation of the cpd of the model
-    cpds = cpd_estimation(model, train)
+    cpds, model = cpd_estimation(model, train)
+    #Associate cpds to the model
     model.add_cpds(cpds)
-    # TODO Inferences on classes
-        
+   
+    # Creating the inference object of the model
+    AAL_inference = VariableElimination(model)  
+
+    # If we have some evidence for the network we can simply pass it
+     # as an argument to the query method in the form of 
+    AAL_inference.query(variables=['sitting'])#,evidence={''variable':value}  
+
