@@ -100,7 +100,7 @@ def train_test(dataset):
 
 def cpd_estimation(model, train):
     print("Estimation of the cpds of the model")
-    model = BayesianModel(best_model.edges())
+    model = BayesianModel(model.edges())
     model.fit(train, estimator=BayesianEstimator, prior_type="BDeu")
     cpds = model.get_cpds()
 
@@ -111,7 +111,20 @@ def cpd_estimation(model, train):
 
     return cpds, model
 
-def inference()
+def inference(train, test, model):
+    
+    # Evaluation of the cpd of the model
+    cpds, model_inf = cpd_estimation(model, train)
+    #Associate cpds to the model
+    model_inf.add_cpds(cpds)
+   
+    # Creating the inference object of the model
+    AAL_inference = VariableElimination(model)  
+
+    # If we have some evidence for the network we can simply pass it
+    # as an argument to the query method in the form of 
+    AAL_inference.query(variables=['sitting'])#,evidence={''variable':value} 
+
 
 if __name__ == "__main__":
     # Load of the dataset preprocessed before
@@ -120,8 +133,10 @@ if __name__ == "__main__":
     #Splitting dataset into train and test 80% - 20%
     train, test = train_test(discrete_dataset)
 
-    
     #Load of the model we want to use to make inference
+    reader=BIFReader('Modelli/model_normalized_100.bif')
+    model=reader.get_model()
+
 
     #Decommment these lines to create a new model
     #search for the best model using Hill Climb Algorithm, for further information look at the documentation
@@ -132,15 +147,7 @@ if __name__ == "__main__":
     end_time = datetime.now() - start_time
     print(str(end_time))
     '''
-    # Evaluation of the cpd of the model
-    cpds, model = cpd_estimation(model, train)
-    #Associate cpds to the model
-    model.add_cpds(cpds)
-   
-    # Creating the inference object of the model
-    AAL_inference = VariableElimination(model)  
+ 
 
-    # If we have some evidence for the network we can simply pass it
-     # as an argument to the query method in the form of 
-    AAL_inference.query(variables=['sitting'])#,evidence={''variable':value}  
-
+    #inference
+    inference(train,test,model)
