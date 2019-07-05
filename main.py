@@ -100,15 +100,16 @@ def train_test(dataset):
 
 def cpd_estimation(model, train):
     print("Estimation of the cpds of the model")
+    print(model.edges())
     model = BayesianModel(model.edges())
     model.fit(train, estimator=BayesianEstimator, prior_type="BDeu")
     for node in model.nodes():
-        print(model.get_cpds(node))
+       print(model.get_cpds(node))
     cpds = model.get_cpds()
     #PRINT OF THE CPDs of the model
-    # for cpd in model.get_cpds():
-    #     print("CPD of {variable}:".format(variable=cpd.variable))
-    #     print(cpd)
+    for cpd in model.get_cpds():
+        pprint("CPD of {variable}:".format(variable=cpd.variable))
+        print(cpd)
 
     return cpds, model
 
@@ -124,7 +125,7 @@ def inference(train, test, model):
 
     # If we have some evidence for the network we can simply pass it
     # as an argument to the query method in the form of 
-    AAL_inference.query(variables=['sitting'])#,evidence={''variable':value} 
+    print(AAL_inference.query(variables=['sittingdown']))#,evidence={''variable':value} 
 
 
 if __name__ == "__main__":
