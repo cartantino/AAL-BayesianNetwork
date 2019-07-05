@@ -111,6 +111,9 @@ def cpd_estimation(model, train):
         pprint("CPD of {variable}:".format(variable=cpd.variable))
         print(cpd)
 
+    model_write = BIFWriter(model)
+    model_write.write_bif('Modelli/model_cpd.bif')
+
     return cpds, model
 
 def inference(train, test, model):
@@ -140,18 +143,6 @@ if __name__ == "__main__":
     # Load of the dataset preprocessed before
     discrete_dataset = preprocessing.load_data_discrete()
 
-    #Splitting dataset into train and test 80% - 20%
-    train, test = train_test(discrete_dataset)
-
-    #Load of the model we want to use to make inference
-    reader=BIFReader('Modelli/model_normalized_100.bif')
-    model=reader.get_model()
-    
-    if model.check_model():
-        print "Your network structure and CPD's are correctly defined. The probabilities in the columns sum to 1. Hill Climb worked fine!"
-    else:
-        print "not good" 
-
     #Decommment these lines to create a new model
     #search for the best model using Hill Climb Algorithm, for further information look at the documentation
     '''
@@ -161,7 +152,18 @@ if __name__ == "__main__":
     end_time = datetime.now() - start_time
     print(str(end_time))
     '''
- 
+
+    #Splitting dataset into train and test 80% - 20%
+    train, test = train_test(discrete_dataset)
+
+    #Load of the model we want to use to make inference
+    reader=BIFReader('Modelli/model_afterclean.bif')
+    model=reader.get_model()
+    if model.check_model():
+        print "Your network structure and CPD's are correctly defined. The probabilities in the columns sum to 1. Hill Climb worked fine!"
+    else:
+        print "not good" 
+
 
     #inference
-    inference(train,test,model)
+    #inference(train,test,model)
