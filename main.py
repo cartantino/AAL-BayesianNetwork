@@ -48,7 +48,7 @@ def create_BN_model(data):
     end_time = time.time()
     sl_time = end_time - start_time
     print("execution time in seconds:{}".format(sl_time))
-    
+
     # Check if the model is ok, see documentation for further information
     if best_model.check_model():
         print("Your network structure and CPD's are correctly defined. The probabilities in the columns sum to 1. Hill Climb worked fine!")
@@ -68,15 +68,15 @@ def train_test(dataset):
                 'total_accel_sensor_4']
 
     #write header in train and test csv
-    with open('train_dataset.csv', "w", newline='') as csvFile:
-        writer = csv.writer(csvFile)
-        writer.writerow(header)
-    csvFile.close()
-
-    with open('test_dataset.csv', "w", newline='') as csvFile:
-        writer = csv.writer(csvFile)
-        writer.writerow(header)
-    csvFile.close()
+    # with open('train_dataset.csv', "w", newline='') as csvFile:
+    #     writer = csv.writer(csvFile)
+    #     writer.writerow(header)
+    # csvFile.close()
+    #
+    # with open('test_dataset.csv', "w", newline='') as csvFile:
+    #     writer = csv.writer(csvFile)
+    #     writer.writerow(header)
+    # csvFile.close()
 
     total_test = dataset[0:0]
     total_train = dataset[0:0]
@@ -92,13 +92,13 @@ def train_test(dataset):
         total_train = total_train.append(train)
 
         #append results in two csv, train and test
-        with open('train_dataset.csv', 'a', newline='') as csvFile:
-            train.to_csv(csvFile, header=False, index=False)
-        csvFile.close()
-
-        with open('test_dataset.csv', 'a', newline='') as csvFile:
-            test.to_csv(csvFile, header=False, index=False)
-        csvFile.close()
+        # with open('train_dataset.csv', 'a', newline='') as csvFile:
+        #     train.to_csv(csvFile, header=False, index=False)
+        # csvFile.close()
+        #
+        # with open('test_dataset.csv', 'a', newline='') as csvFile:
+        #     test.to_csv(csvFile, header=False, index=False)
+        # csvFile.close()
 
     print(len(total_train), len(total_test))
 
@@ -125,28 +125,56 @@ def cpd_estimation(model, train):
     return cpds, model
 
 def inference(train, test, model):
-    
+
     # Evaluation of the cpd of the model
     cpds, model_inf = cpd_estimation(model, train)
     #Associate cpds to the model
     #model_inf.add_cpds(cpds)
-   
+
     # Creating the inference object of the model
-    #AAL_inference = VariableElimination(model_inf)  
+    #AAL_inference = VariableElimination(model_inf)
 
     # # If we have some evidence for the network we can simply pass it
-    # # as an argument to the query method in the form of 
-    #print(AAL_inference.query(variables=['sittingdown']))#,evidence={''variable':value} 
+    # # as an argument to the query method in the form of
+    #print(AAL_inference.query(variables=['sittingdown']))#,evidence={''variable':value}
+    removed_column = test.drop(columns=['sitting', 'sittingdown', 'standing', 'standingup', 'walking'], axis=1, inplace=True)
 
     #predict function uses exact inference on nodes wich are not given in the query
-    prediction = model.predict(test)#.values.ravel()
+    test.index = [i for i in range(len(test)) ]
+    prediction = predict(model, test)#.values.ravel()
     print(prediction)
 
+
+def predict(self, data):
+    from collections import defaultdict
+
+    from pgmpy.inference import VariableElimination
+
+    if set(data.columns) == set(self.nodes()):
+        raise ValueError("No variable missing in data. Nothing to predict")
+
+    elif set(data.columns) - set(self.nodes()):
+        raise ValueError("Data has variables which are not in the model")
+
+    missing_variables = set(self.nodes()) - set(data.columns)
+    print(missing_variables)
+    pred_values = defaultdict(list)
+
+    # Send state_names dict from one of the estimated CPDs to the inference class.
+    model_inference = VariableElimination(self, state_names=self.get_cpds()[0].state_names)
+    for index, data_point in data.iterrows():
+        print index,data_point
+        states_dict = model_inference.map_query(variables=missing_variables, evidence=data_point.to_dict())
+        for k, v in states_dict.items():
+            print k,v
+            pred_values[k].append(v)
+        print "*********"
+    return pd.DataFrame(pred_values, index=data.index)
 
 
 if __name__ == "__main__":
     # Load of the dataset preprocessed before
-    #discrete_dataset = preprocessing.load_data_discrete()
+    discrete_dataset = preprocessing.load_data_discrete()
 
     #Decommment these lines to create a new model
     #search for the best model using Hill Climb Algorithm, for further information look at the documentation
@@ -159,11 +187,11 @@ if __name__ == "__main__":
     '''
 
     #Splitting dataset into train and test 80% - 20%
-    #train, test = train_test(discrete_dataset)
+    train, test = train_test(discrete_dataset)
 
     #create a csv for test_dataset without 5 classes
     '''removed_column = test.drop(['sitting', 'sittingdown', 'standing', 'standingup', 'walking'], axis=1)
-   
+
     with open('test_inference.csv', "a", newline='') as csvFile:
         removed_column.to_csv(csvFile, index=False)
     csvFile.close()'''
@@ -174,10 +202,10 @@ if __name__ == "__main__":
     if model.check_model():
         print "Your network structure and CPD's are correctly defined. The probabilities in the columns sum to 1. Hill Climb worked fine!"
     else:
-        print "not good" 
+        print "not good"
 
-    test = preprocessing.load_test_inference()
-    train  = preprocessing.load_training()
+    #test = preprocessing.load_test_inference()
+    #train  = preprocessing.load_training()
 
     #inference
     inference(train,test,model)
