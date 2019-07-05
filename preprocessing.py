@@ -189,6 +189,8 @@ def sample_split(sample,clas,name):
 
         #adding 5 columns, one for each class
         new_sample = split_classes(new_sample)
+
+        #evaluation of standard deviation and mean of acceleration
         new_sample = acceleration_mean_stdev(new_sample)
 
         user = new_sample['user']
@@ -233,9 +235,9 @@ def variance_evaluation(subset):
         new_row[field] = subset[field].iloc[0]
 
     for field in ['roll1', 'pitch1', 'roll2', 'pitch2', 'roll3', 'pitch3','roll4', 'pitch4','total_accel_sensor_1','total_accel_sensor_2','total_accel_sensor_3','total_accel_sensor_4']:
-        #dev_std = np.std(subset[field])
+        # dev_std = np.std(subset[field])
         # print("\ndev_std: " + str(dev_std) )
-        #mean = np.mean(subset[field])
+        # mean = np.mean(subset[field])
         # print("\nmean : " + str(mean))
         # print("PRIMA: \n")
         # print(subset[field])
