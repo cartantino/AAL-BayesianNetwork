@@ -102,12 +102,13 @@ def cpd_estimation(model, train):
     print("Estimation of the cpds of the model")
     model = BayesianModel(model.edges())
     model.fit(train, estimator=BayesianEstimator, prior_type="BDeu")
+    for node in model.nodes():
+        print(model.get_cpds(node))
     cpds = model.get_cpds()
-
     #PRINT OF THE CPDs of the model
-    for cpd in model.get_cpds():
-        print("CPD of {variable}:".format(variable=cpd.variable))
-        print(cpd)
+    # for cpd in model.get_cpds():
+    #     print("CPD of {variable}:".format(variable=cpd.variable))
+    #     print(cpd)
 
     return cpds, model
 
@@ -116,10 +117,10 @@ def inference(train, test, model):
     # Evaluation of the cpd of the model
     cpds, model_inf = cpd_estimation(model, train)
     #Associate cpds to the model
-    model_inf.add_cpds(cpds)
+    #model_inf.add_cpds(cpds)
    
     # Creating the inference object of the model
-    AAL_inference = VariableElimination(model)  
+    AAL_inference = VariableElimination(model_inf)  
 
     # If we have some evidence for the network we can simply pass it
     # as an argument to the query method in the form of 
@@ -136,7 +137,11 @@ if __name__ == "__main__":
     #Load of the model we want to use to make inference
     reader=BIFReader('Modelli/model_normalized_100.bif')
     model=reader.get_model()
-
+    
+    if model.check_model():
+        print "Your network structure and CPD's are correctly defined. The probabilities in the columns sum to 1. Hill Climb worked fine!"
+    else:
+        print "not good" 
 
     #Decommment these lines to create a new model
     #search for the best model using Hill Climb Algorithm, for further information look at the documentation
