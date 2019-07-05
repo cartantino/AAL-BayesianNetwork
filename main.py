@@ -121,11 +121,19 @@ def inference(train, test, model):
     #model_inf.add_cpds(cpds)
    
     # Creating the inference object of the model
-    AAL_inference = VariableElimination(model_inf)  
+    # AAL_inference = VariableElimination(model_inf)  
 
-    # If we have some evidence for the network we can simply pass it
-    # as an argument to the query method in the form of 
-    print(AAL_inference.query(variables=['sittingdown']))#,evidence={''variable':value} 
+    # # If we have some evidence for the network we can simply pass it
+    # # as an argument to the query method in the form of 
+    # print(AAL_inference.query(variables=['sittingdown']))#,evidence={''variable':value} 
+
+    classes=['sitting', 'sittingdown', 'standing', 'standingup', 'walking']
+    removed_column = test.drop(columns = classes, axis=1, inplace = True)
+
+    #predict function uses exact inference on nodes wich are not given in the query
+    prediction = model.predict(test)#.values.ravel()
+    print(prediction)
+
 
 
 if __name__ == "__main__":
