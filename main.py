@@ -68,15 +68,18 @@ def train_test(dataset):
                 'total_accel_sensor_4']
 
     #write header in train and test csv
-    with open('train_dataset.csv', "w") as csvFile:
+    with open('train_dataset.csv', "w", newline='') as csvFile:
         writer = csv.writer(csvFile)
         writer.writerow(header)
     csvFile.close()
 
-    with open('test_dataset.csv', "w") as csvFile:
+    with open('test_dataset.csv', "w", newline='') as csvFile:
         writer = csv.writer(csvFile)
         writer.writerow(header)
     csvFile.close()
+
+    total_test = dataset[0:0]
+    total_train = dataset[0:0]
 
     for cl in classes:
         #find in dataset one class at once
@@ -85,16 +88,21 @@ def train_test(dataset):
         #training and testing of one class: 80% training, 20% testing of each class
         train, test = train_test_split(c, test_size=0.2)
 
+        total_test = total_test.append(test)
+        total_train = total_train.append(train)
+
         #append results in two csv, train and test
-        with open('train_dataset.csv', 'a') as csvFile:
+        with open('train_dataset.csv', 'a', newline='') as csvFile:
             train.to_csv(csvFile, header=False, index=False)
         csvFile.close()
 
-        with open('test_dataset.csv', 'a') as csvFile:
+        with open('test_dataset.csv', 'a', newline='') as csvFile:
             test.to_csv(csvFile, header=False, index=False)
         csvFile.close()
 
-    return train, test
+    print(len(total_train), len(total_test))
+
+    return total_train, total_test
 
 
 
@@ -130,9 +138,6 @@ def inference(train, test, model):
     # # as an argument to the query method in the form of 
     # print(AAL_inference.query(variables=['sittingdown']))#,evidence={''variable':value} 
 
-    classes=['sitting', 'sittingdown', 'standing', 'standingup', 'walking']
-    #removed_column = test.drop(columns = classes, axis=1, inplace = True)
-
     #predict function uses exact inference on nodes wich are not given in the query
     #prediction = model.predict(test)#.values.ravel()
     #print(prediction)
@@ -154,7 +159,16 @@ if __name__ == "__main__":
     '''
 
     #Splitting dataset into train and test 80% - 20%
-    train, test = train_test(discrete_dataset)
+    #train, test = train_test(discrete_dataset)
+
+    
+    #create a csv for test_dataset without 5 classes
+    '''removed_column = test.drop(['sitting', 'sittingdown', 'standing', 'standingup', 'walking'], axis=1)
+   
+    with open('test_inference.csv', "a", newline='') as csvFile:
+        removed_column.to_csv(csvFile, index=False)
+    csvFile.close()'''
+
 
     #Load of the model we want to use to make inference
     reader=BIFReader('Modelli/model_afterclean.bif')
@@ -163,7 +177,6 @@ if __name__ == "__main__":
         print "Your network structure and CPD's are correctly defined. The probabilities in the columns sum to 1. Hill Climb worked fine!"
     else:
         print "not good" 
-
 
     #inference
     inference(train,test,model)

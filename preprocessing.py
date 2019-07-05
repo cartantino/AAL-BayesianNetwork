@@ -102,10 +102,6 @@ def load_data_discrete():
     return dataset
 
 
-
-
-
-
 # Evaluation of roll, pitch and acceleration vector for each record of the dataset
 def features_extraction(dataset):
     for i in range(1,5):
