@@ -86,7 +86,7 @@ def load_dataset():
 
 #load dataset_sampled with features evaluated before
 def load_data_sampled():
-    filename = 'data_sampled.csv'
+    filename = 'csv_20_noNorm/data_sampled.csv'
     raw_data = open(filename, 'rt')
     reader = csv.reader(raw_data, delimiter = ',')
     x = list(reader)
@@ -124,7 +124,7 @@ def load_data_sampled():
 
 
 def load_data_discrete():
-    filename = 'data_discrete.csv'
+    filename = 'csv_20_noNorm/data_discrete_20.csv'
     raw_data = open(filename, 'rt')
     reader = csv.reader(raw_data, delimiter = ',')
     x = list(reader)
