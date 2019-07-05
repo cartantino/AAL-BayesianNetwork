@@ -131,11 +131,11 @@ def inference(train, test, model):
     # print(AAL_inference.query(variables=['sittingdown']))#,evidence={''variable':value} 
 
     classes=['sitting', 'sittingdown', 'standing', 'standingup', 'walking']
-    removed_column = test.drop(columns = classes, axis=1, inplace = True)
+    #removed_column = test.drop(columns = classes, axis=1, inplace = True)
 
     #predict function uses exact inference on nodes wich are not given in the query
-    prediction = model.predict(test)#.values.ravel()
-    print(prediction)
+    #prediction = model.predict(test)#.values.ravel()
+    #print(prediction)
 
 
 
@@ -166,4 +166,4 @@ if __name__ == "__main__":
 
 
     #inference
-    #inference(train,test,model)
+    inference(train,test,model)
