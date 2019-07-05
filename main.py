@@ -132,21 +132,21 @@ def inference(train, test, model):
     #model_inf.add_cpds(cpds)
    
     # Creating the inference object of the model
-    # AAL_inference = VariableElimination(model_inf)  
+    #AAL_inference = VariableElimination(model_inf)  
 
     # # If we have some evidence for the network we can simply pass it
     # # as an argument to the query method in the form of 
-    # print(AAL_inference.query(variables=['sittingdown']))#,evidence={''variable':value} 
+    #print(AAL_inference.query(variables=['sittingdown']))#,evidence={''variable':value} 
 
     #predict function uses exact inference on nodes wich are not given in the query
-    #prediction = model.predict(test)#.values.ravel()
-    #print(prediction)
+    prediction = model.predict(test)#.values.ravel()
+    print(prediction)
 
 
 
 if __name__ == "__main__":
     # Load of the dataset preprocessed before
-    discrete_dataset = preprocessing.load_data_discrete()
+    #discrete_dataset = preprocessing.load_data_discrete()
 
     #Decommment these lines to create a new model
     #search for the best model using Hill Climb Algorithm, for further information look at the documentation
@@ -161,14 +161,12 @@ if __name__ == "__main__":
     #Splitting dataset into train and test 80% - 20%
     #train, test = train_test(discrete_dataset)
 
-    
     #create a csv for test_dataset without 5 classes
     '''removed_column = test.drop(['sitting', 'sittingdown', 'standing', 'standingup', 'walking'], axis=1)
    
     with open('test_inference.csv', "a", newline='') as csvFile:
         removed_column.to_csv(csvFile, index=False)
     csvFile.close()'''
-
 
     #Load of the model we want to use to make inference
     reader=BIFReader('Modelli/model_afterclean.bif')
@@ -177,6 +175,9 @@ if __name__ == "__main__":
         print "Your network structure and CPD's are correctly defined. The probabilities in the columns sum to 1. Hill Climb worked fine!"
     else:
         print "not good" 
+
+    test = preprocessing.load_test_inference()
+    train  = preprocessing.load_training()
 
     #inference
     inference(train,test,model)

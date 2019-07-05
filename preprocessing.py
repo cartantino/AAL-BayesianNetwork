@@ -7,6 +7,54 @@ warnings.filterwarnings('ignore')
 # PREPROCESSING
 
 #FEATURE EXTRACTION
+
+def load_test_inference():
+    filename = 'test_inference.csv'
+    raw_data = open(filename, 'rt')
+    reader = csv.reader(raw_data, delimiter = ',')
+    x = list(reader)
+    dataset = np.array(x[1:])
+    dataset = pd.DataFrame(data={
+        'acceleration_mean' : [int(dataset[i][0])       for i in range(len(dataset))],
+        'acceleration_stdev' : [int(dataset[i][1])       for i in range(len(dataset))],
+        'pitch1' : [int(dataset[i][2])       for i in range(len(dataset))],
+        'pitch2' : [int(dataset[i][3])       for i in range(len(dataset))],
+        'pitch3' : [int(dataset[i][4])       for i in range(len(dataset))],
+        'roll1' : [int(dataset[i][5])       for i in range(len(dataset))],
+        'roll2' : [int(dataset[i][6])       for i in range(len(dataset))],
+        'roll3' : [int(dataset[i][7])       for i in range(len(dataset))],
+        'total_accel_sensor_1' : [int(dataset[i][8])       for i in range(len(dataset))],
+        'total_accel_sensor_2' : [int(dataset[i][9])       for i in range(len(dataset))],
+        'total_accel_sensor_4' : [int(dataset[i][10])       for i in range(len(dataset))]})
+    
+    return dataset
+
+def load_training():
+    filename = 'train_dataset.csv'
+    raw_data = open(filename, 'rt')
+    reader = csv.reader(raw_data, delimiter = ',')
+    x = list(reader)
+    dataset = np.array(x[1:])
+    dataset = pd.DataFrame(data={
+                'acceleration_mean' : [int(dataset[i][0]) for i in range(len(dataset))],
+                'acceleration_stdev' : [int(dataset[i][1]) for i in range(len(dataset))],
+                'pitch1' : [int(dataset[i][2]) for i in range(len(dataset))],
+                'pitch2' : [int(dataset[i][3]) for i in range(len(dataset))],
+                'pitch3' : [int(dataset[i][4]) for i in range(len(dataset))],
+                'roll1' : [int(dataset[i][5]) for i in range(len(dataset))],
+                'roll2' : [int(dataset[i][6]) for i in range(len(dataset))],
+                'roll3' : [int(dataset[i][7]) for i in range(len(dataset))],
+                'sitting' : [int(dataset[i][8]) for i in range(len(dataset))],
+                'sittingdown' : [int(dataset[i][9]) for i in range(len(dataset))],
+                'standing' : [int(dataset[i][10]) for i in range(len(dataset))],
+                'standingup' : [int(dataset[i][11]) for i in range(len(dataset))],
+                'walking' : [int(dataset[i][12]) for i in range(len(dataset))],
+                'total_accel_sensor_1' : [int(dataset[i][13]) for i in range(len(dataset))],
+                'total_accel_sensor_2' : [int(dataset[i][14]) for i in range(len(dataset))],
+                'total_accel_sensor_4' : [int(dataset[i][15]) for i in range(len(dataset))]})
+    
+    return dataset
+
 # load dataset.csv
 def load_dataset():
     filename = 'dataset.csv'
