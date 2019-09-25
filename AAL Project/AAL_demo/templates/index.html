@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Ambient Assisted Living Demo</title>
+      <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+      <script type="text/javascript" src="//code.jquery.com/jquery-2.1.1.js"></script>
+      <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+      <style>
+         body {
+         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+         line-height:1.5em;
+         color: #232323;
+         -webkit-font-smoothing: antialiased;
+         }
+         h1, h2, h3 {
+         font-family: Times, serif;
+         line-height:1.5em;
+         border-bottom: 1px solid #ccc;
+         }
+         .page-header {
+         border-bottom: 0px;
+         }
+      </style>
+      <link type="text/css" rel="stylesheet" href= "static/styles/component.css" />
+   </head>
+   <body>
+      <!-- Begin page content -->
+      <div class="container">
+         <div class="page-header">
+            <h1><a href="http://0.0.0.0:5000">Ambient Assisted Living Demo</a></h1>
+            <p> This is a demonstration showing the demo of AAL (Ambient Assisted Living Demo). </p>
+         </div>
+
+         {% if main %}
+         <div class="container-fluid">
+             <div class="row">
+             <div class="col-xs-6 col-md-4">
+                <div class="img-didascalia">
+                   <label>Scheme of accelerometers positioning</label>
+                   <img  class="media-object" height="300px" class="responsive" src="/static/images/scheme.png">
+                   <br>
+                   <br>
+                </div>
+             </div>
+
+            <div class="col-xs-12 col-md-8">
+
+                <form class="form-inline" method="POST" action="/loadExample">
+                  <div class="form-group">
+                    <div class="input-group">
+                        <div class="row">
+                            <br>
+                            <p>Please select a position: </p>
+                            <div class="col-sm-6">
+                                <select name="class" class="selectpicker form-control">
+                                    <option value="none">Random</option>
+                                    <option value="sittingdown">Sittingdown</option>
+                                    <option value="standingup">Standingup</option>
+                                    <option value="walking">Walking</option>
+                                    <option value="standing">Standing</option>
+                                    <option value="sitting">Sitting</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <button type="submit" class="btn btn-default">Load example</button>
+                            </div>
+                            {% if has_predict_button %}
+                            <div class="col-sm-3">
+                                <a href="/prediction"><input type="button" class="btn btn-default" value="Predict position"></a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                  </div>
+                </form>
+
+                <br>
+                {% if has_sample %}
+                 <!--<label text-align="center">Reading accelerometers values</label>-->
+                <form id="features">
+                      <!-- data-upload -->
+                      <table class="responsive">
+                          <col width="130">
+                          <col width="130">
+                          <col width="130">
+                          <col width="230">
+                         <tr>
+                            <th></th>
+                            <th>Roll</th>
+                            <th>Pitch</th>
+                            <th>Module acceleration vector</th>
+                         </tr>
+                         <tr>
+                            <th align="center">1 Accelerometer</th>
+                            <td>{{ sample[4]}}</td>
+                            <td>{{ sample[0]}}</td>
+                            <td>{{ sample[8]}}</td>
+                         </tr>
+                         <tr>
+                            <th align="center">2 Accelerometer</th>
+                            <td>{{ sample[5]}}</td>
+                            <td>{{ sample[1]}}</td>
+                            <td>{{ sample[9]}}</td>
+                         </tr>
+                         <tr>
+                            <th align="center">3 Accelerometer</th>
+                            <td>{{ sample[6]}}</td>
+                            <td>{{ sample[2]}}</td>
+                            <td>{{ sample[9]}}</td>
+                         </tr>
+                         <tr>
+                            <th align="center">4 Accelerometer</th>
+                            <td>{{ sample[7]}}</td>
+                            <td>{{ sample[3]}}</td>
+                            <td>{{ sample[10]}}</td>
+                         </tr>
+                      </table>
+
+                      <br><br>
+                      <div class="row">
+                          <div class="col-sm-4">
+                              <b>True prediction: </b>{{  true_prediction}}
+                          </div>
+                          {% if has_prediction %}
+                          <div class="col-sm-4">
+                            <b>Class predicted: </b>{{  result[0][0]  }}
+                          </div>
+                          <div class="col-sm-4">
+                            <form id="probabilities">
+                             <!-- data-upload -->
+                             <table class="responsive">
+                                <col width="130">
+                                <col width="130">
+                                <tr>
+                                    <th>Classes</th>
+                                    <th>Probabilities</th>
+                                </tr>
+                                {% for single_pred in result %}
+                                <tr>
+                                    <td>{{ single_pred[0] }}</td>
+                                    <td>{{ single_pred[1] }}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+                </form>
+            {% endif %}
+            </div>
+         </div>
+         </div>
+         </div>
+        {% endif %}
+      <hr>
+
+      <div id="footer">
+         <div class="container">
+            <p>Modelli probabilistici per le decisioni 2019 - Amrani Hamza 807386, Brumana Mattia 808374, Carta Costantino 808417</p>
+         </div>
+      </div>
+
+   </body>
+</html>
