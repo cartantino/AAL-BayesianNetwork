@@ -20,7 +20,7 @@ Development of bayesian network that predict the action accomplished by a subjec
 
 ### EXECUTE CODE - AAL PROJECT
 
-1. Install conda environments (you can found it in folder "Environments Conda"; Windows and MacOS version)
+1. Install conda environments (you can found it in folder `Environments Conda`; both Windows and MacOS version exists)
    - Launch `python preprocessing_ugolino.py` --> Preprocessing of data According to *[W.Ugolino et al.]*
 **Or**	
    - Launch `python preprocessing_our.py` --> Preprocessing according to our version.
@@ -31,12 +31,10 @@ Development of bayesian network that predict the action accomplished by a subjec
    - A bayesan network will be created using Pomegranatelibrary; evaluation of the accuracy of the model created, confusion matrix and metrics
 
 
-For every informations about preprocessing or function used to generate the networks look at "Relazione.pdf" or contact us.
+For every informations about preprocessing or function used to generate the networks look at `Relazione.pdf` or contact us.
 
 ## Contact
 
 + Amrani Hamza -  h.amrani@campus.unimib.it
 + Brumana Mattia -  m.brumana@campus.unimib.it
 + Carta Costantino -  c.carta4@campus.unimib.it
-
-+ Università degli Studi di Milano Bicocca
