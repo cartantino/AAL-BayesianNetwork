@@ -1,4 +1,4 @@
-#A Bayesian Network classification model for activity recognition in HAR research area
+# A Bayesian Network classification model for activity recognition in HAR research area
 
 --------------------------------
 ## Aim of the project
